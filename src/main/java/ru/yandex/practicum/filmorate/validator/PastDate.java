@@ -9,7 +9,7 @@ import java.lang.annotation.RetentionPolicy;
 @Constraint(validatedBy = PastDateValidator.class)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface PastDate {
-    String value() default "1895-12-28";
+    String value();
 
     String message() default "Release date must be equal to or after {value}";
 

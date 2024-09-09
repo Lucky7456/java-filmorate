@@ -16,7 +16,7 @@ public class Film {
     @NotBlank
     @Size(max = 200)
     private String description;
-    @PastDate
+    @PastDate("1895-12-28")
     private LocalDate releaseDate;
     @Positive
     private int duration;
