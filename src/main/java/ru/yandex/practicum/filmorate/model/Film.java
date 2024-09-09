@@ -10,13 +10,14 @@ import java.time.LocalDate;
 
 @Data
 public class Film {
-    Long id;
+    private Long id;
     @NotBlank
-    String name;
+    private String name;
+    @NotBlank
     @Size(max = 200)
-    String description;
+    private String description;
     @PastDate
-    LocalDate releaseDate;
+    private LocalDate releaseDate;
     @Positive
-    int duration;
+    private int duration;
 }

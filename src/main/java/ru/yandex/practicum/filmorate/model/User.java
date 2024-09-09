@@ -9,17 +9,17 @@ import java.time.LocalDate;
 
 @Data
 public class User {
-    Long id;
+    private Long id;
     @NotBlank
     @Email
-    String email;
+    private String email;
     @NotNull
     @Pattern(regexp = "\\S+")
-    String login;
+    private String login;
     @Getter(AccessLevel.NONE)
-    String name;
+    private String name;
     @Past
-    LocalDate birthday;
+    private LocalDate birthday;
 
     public String getName() {
         return name == null || name.isBlank() ? login : name;

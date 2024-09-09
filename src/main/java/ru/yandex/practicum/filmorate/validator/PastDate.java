@@ -11,7 +11,7 @@ import java.lang.annotation.RetentionPolicy;
 public @interface PastDate {
     String value() default "1895-12-28";
 
-    String message() default "Release date must be after {value}";
+    String message() default "Release date must be equal to or after {value}";
 
     Class<?>[] groups() default {};
 

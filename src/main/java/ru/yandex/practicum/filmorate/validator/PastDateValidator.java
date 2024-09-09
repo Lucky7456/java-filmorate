@@ -15,6 +15,6 @@ public class PastDateValidator implements ConstraintValidator<PastDate, LocalDat
 
     @Override
     public boolean isValid(LocalDate localDate, ConstraintValidatorContext context) {
-        return localDate != null && localDate.isAfter(pastDate);
+        return localDate != null && (localDate.isAfter(pastDate) || localDate.isEqual(pastDate));
     }
 }
