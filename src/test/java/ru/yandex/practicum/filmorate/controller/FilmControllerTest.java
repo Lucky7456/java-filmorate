@@ -91,7 +91,7 @@ public class FilmControllerTest {
         String response = result.getResponse().getContentAsString();
 
         film.setId(Long.valueOf(JsonPath.parse(response).read("$.id").toString()));
-        film.setName("updatedFilm");
+        film.setName("updated" + film.getClass());
         this.mockMvc.perform(put(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(film))
