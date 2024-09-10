@@ -18,7 +18,8 @@ public class User {
     private String login;
     @Getter(AccessLevel.NONE)
     private String name;
-    @Past
+    @NotNull
+    @PastOrPresent
     private LocalDate birthday;
 
     public String getName() {

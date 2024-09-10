@@ -32,7 +32,7 @@ public class UserTest {
         User emptyUser = new User();
         Set<ConstraintViolation<User>> violations = validator.validate(emptyUser);
         assertFalse(violations.isEmpty());
-        assertEquals(2, violations.size());
+        assertEquals(3, violations.size());
     }
 
     @Test
