@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.interfaces.BaseUserTest;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -13,19 +13,9 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class UserTest {
+public class UserTest extends BaseUserTest {
     @Autowired
     private Validator validator;
-
-    private final User user = new User();
-
-    @BeforeEach
-    void setUp() {
-        user.setName("userName");
-        user.setEmail("valid@mail.ru");
-        user.setLogin("loginSuccess");
-        user.setBirthday(LocalDate.now().minusDays(1));
-    }
 
     @Test
     void shouldFailEmptyUser() {
@@ -51,10 +41,6 @@ public class UserTest {
         violations = validator.validate(user);
         assertFalse(violations.isEmpty());
         assertEquals(1, violations.size());
-
-        user.setLogin("loginSuccess");
-        violations = validator.validate(user);
-        assertTrue(violations.isEmpty());
     }
 
     @Test

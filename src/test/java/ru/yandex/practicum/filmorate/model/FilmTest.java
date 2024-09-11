@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import ru.yandex.practicum.filmorate.interfaces.BaseFilmTest;
 
 import java.time.LocalDate;
 import java.util.Set;
@@ -13,19 +13,9 @@ import java.util.Set;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-public class FilmTest {
+public class FilmTest extends BaseFilmTest {
     @Autowired
     private Validator validator;
-
-    private final Film film = new Film();
-
-    @BeforeEach
-    void setUp() {
-        film.setName("film");
-        film.setDescription("description");
-        film.setReleaseDate(LocalDate.parse("1895-12-28"));
-        film.setDuration(1);
-    }
 
     @Test
     void shouldFailEmptyFilm() {
