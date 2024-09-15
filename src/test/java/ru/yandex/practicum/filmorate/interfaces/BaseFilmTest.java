@@ -15,5 +15,4 @@ public class BaseFilmTest {
         film.setReleaseDate(LocalDate.parse("1895-12-28"));
         film.setDuration(1);
     }
-
 }
