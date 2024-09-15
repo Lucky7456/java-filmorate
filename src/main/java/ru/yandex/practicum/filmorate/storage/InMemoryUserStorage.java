@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
@@ -39,7 +39,7 @@ public class InMemoryUserStorage implements UserStorage {
             log.debug("update {}", user);
             return user;
         }
-        throw new ValidationException("Пользователь с id = " + user.getId() + " не найден");
+        throw new NotFoundException("Пользователь с id = " + user.getId() + " не найден");
     }
 
     @Override

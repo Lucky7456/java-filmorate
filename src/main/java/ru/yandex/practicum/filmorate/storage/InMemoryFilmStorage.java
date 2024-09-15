@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ResponseStatusException;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
@@ -39,7 +39,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             log.debug("update {}", film);
             return film;
         }
-        throw new ValidationException("Фильм с id = " + film.getId() + " не найден");
+        throw new NotFoundException("Фильм с id = " + film.getId() + " не найден");
     }
 
     @Override
