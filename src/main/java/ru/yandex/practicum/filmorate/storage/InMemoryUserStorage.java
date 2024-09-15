@@ -47,6 +47,11 @@ public class InMemoryUserStorage implements UserStorage {
         throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
     }
 
+    @Override
+    public User getUserById(Long id) {
+        return users.get(id);
+    }
+
     private long getNextId() {
         return ++nextId;
     }
