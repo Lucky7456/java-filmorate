@@ -26,12 +26,12 @@ public class User {
 
     private final Set<Long> friends = new HashSet<>();
 
-    public void addFriend(User friend) {
-        friends.add(friend.getId());
+    public void addFriend(Long friendId) {
+        friends.add(friendId);
     }
 
-    public void removeFriend(User friend) {
-        friends.remove(friend.getId());
+    public void removeFriend(Long friendId) {
+        friends.remove(friendId);
     }
 
     public String getName() {

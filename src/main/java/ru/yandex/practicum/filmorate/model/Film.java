@@ -25,12 +25,12 @@ public class Film {
 
     private final Set<Long> likes = new HashSet<>();
 
-    public void addLike(User user) {
-        likes.add(user.getId());
+    public void addLike(long userId) {
+        likes.add(userId);
     }
 
-    public void removeLike(User user) {
-        likes.remove(user.getId());
+    public void removeLike(long userId) {
+        likes.remove(userId);
     }
 
     public int popularity() {

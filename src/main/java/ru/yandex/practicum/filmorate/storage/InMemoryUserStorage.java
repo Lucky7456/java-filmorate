@@ -48,8 +48,10 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public User getUserById(Long id) {
-        return users.get(id);
+    public User getUserById(long id) {
+        if (users.containsKey(id)) return users.get(id);
+
+        throw new NotFoundException("Пользователь с id = " + id + " не найден");
     }
 
     private long getNextId() {

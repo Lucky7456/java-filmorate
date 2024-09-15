@@ -29,19 +29,25 @@ public class UserService {
         return storage.delete(user);
     }
 
-    public void addFriend(User user, User friend) {
-        friend.addFriend(user);
-        user.addFriend(friend);
+    public void addFriend(long userId, long friendId) {
+        storage.getUserById(friendId).addFriend(userId);
+        storage.getUserById(userId).addFriend(friendId);
     }
 
-    public void removeFriend(User user, User friend) {
-        friend.removeFriend(user);
-        user.removeFriend(friend);
+    public void removeFriend(long userId, long friendId) {
+        storage.getUserById(friendId).removeFriend(userId);
+        storage.getUserById(userId).removeFriend(friendId);
     }
 
-    public List<User> getMutualFriends(User user, User friend) {
-        return user.getFriends().stream()
-                .filter(friend.getFriends()::contains)
+    public List<User> findFriends(long userId) {
+        return storage.getUserById(userId).getFriends().stream()
+                .map(storage::getUserById)
+                .toList();
+    }
+
+    public List<User> getMutualFriends(long userId, long friendId) {
+        return storage.getUserById(userId).getFriends().stream()
+                .filter(storage.getUserById(friendId).getFriends()::contains)
                 .map(storage::getUserById)
                 .toList();
     }
