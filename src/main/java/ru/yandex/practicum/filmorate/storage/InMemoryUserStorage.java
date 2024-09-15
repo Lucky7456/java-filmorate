@@ -1,9 +1,6 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
-import org.springframework.web.server.ResponseStatusException;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
@@ -13,7 +10,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-@Slf4j
 @Component
 public class InMemoryUserStorage implements UserStorage {
     private final Map<Long, User> users = new HashMap<>();
@@ -28,7 +24,6 @@ public class InMemoryUserStorage implements UserStorage {
     public User create(User user) {
         user.setId(getNextId());
         users.put(user.getId(), user);
-        log.debug("create {}", user);
         return user;
     }
 
@@ -36,7 +31,6 @@ public class InMemoryUserStorage implements UserStorage {
     public User update(User user) {
         if (users.containsKey(user.getId())) {
             users.put(user.getId(), user);
-            log.debug("update {}", user);
             return user;
         }
         throw new NotFoundException("Пользователь с id = " + user.getId() + " не найден");
@@ -44,13 +38,17 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User delete(User user) {
-        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED);
+        if (users.remove(user.getId()) != null) {
+            return user;
+        }
+        throw new NotFoundException("Пользователь с id = " + user.getId() + " не найден");
     }
 
     @Override
     public User getUserById(long id) {
-        if (users.containsKey(id)) return users.get(id);
-
+        if (users.containsKey(id)) {
+            return users.get(id);
+        }
         throw new NotFoundException("Пользователь с id = " + id + " не найден");
     }
 
