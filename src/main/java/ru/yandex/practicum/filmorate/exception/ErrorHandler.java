@@ -8,9 +8,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @RestControllerAdvice("ru.yandex.practicum.filmorate.controller")
 public class ErrorHandler {
-    @ExceptionHandler({MethodArgumentNotValidException.class, ValidationException.class})
+    @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handle(final RuntimeException e) {
+    public ErrorResponse handle(final MethodArgumentNotValidException e) {
         return new ErrorResponse("Некорректное значение поля: " + e.getMessage());
     }
 
