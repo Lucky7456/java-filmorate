@@ -14,5 +14,6 @@ public class BaseUserTest {
         user.setEmail("valid@mail.ru");
         user.setLogin("loginSuccess");
         user.setBirthday(LocalDate.now().minusDays(1));
+        user.setId(9999L);
     }
 }
