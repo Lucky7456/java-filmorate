@@ -33,10 +33,12 @@
   FROM user
   WHERE id IN (SELECT f1.friend_id
                FROM friends AS f1
-               JOIN friends AS f2 ON f1.friend_id = f2.friend_id
-               JOIN (SELECT id
-                     FROM friend_request
-                     WHERE status) AS fr 
-               ON fr.id = f1.friend_request_id AND fr.id = f2.friend_request_id
-               WHERE f1.user_id = @user_1 AND f2.user_id = @user_2) AS mutual_friend_id;
+               JOIN friends AS f2 
+               ON f1.friend_id = f2.friend_id
+               JOIN friend_request AS fr 
+               ON fr.id = f1.friend_request_id 
+               AND fr.id = f2.friend_request_id
+               WHERE fr.status
+               AND f1.user_id = @user_1 
+               AND f2.user_id = @user_2) AS mutual_friend_id;
   ```
