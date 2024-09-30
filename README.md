@@ -30,7 +30,7 @@
 - список общих друзей `@user_1` и `@user_2`
   ```sql
   SELECT *
-  FROM USER
+  FROM user
   WHERE id IN (SELECT f1.friend_id
                FROM friends AS f1
                JOIN friends AS f2 ON f1.friend_id = f2.friend_id
