@@ -7,7 +7,6 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.Collection;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -29,35 +28,28 @@ public class UserService {
         return storage.update(user);
     }
 
-    public User delete(User user) {
+    public boolean delete(User user) {
         log.debug("delete {}", user);
         return storage.delete(user);
     }
 
     public void addFriend(long userId, long friendId) {
-        storage.getUserById(friendId).addFriend(userId);
-        storage.getUserById(userId).addFriend(friendId);
+        storage.addFriend(userId, friendId);
         log.debug("{} addFriend {}", storage.getUserById(userId), storage.getUserById(friendId));
     }
 
     public void removeFriend(long userId, long friendId) {
-        storage.getUserById(friendId).removeFriend(userId);
-        storage.getUserById(userId).removeFriend(friendId);
+        storage.removeFriend(userId, friendId);
         log.debug("{} removeFriend {}", storage.getUserById(userId), storage.getUserById(friendId));
     }
 
-    public List<User> findFriends(long userId) {
+    public Collection<User> findFriends(long userId) {
         log.debug("findFriends {}", storage.getUserById(userId));
-        return storage.getUserById(userId).getFriends().stream()
-                .map(storage::getUserById)
-                .toList();
+        return storage.findAllFriends(userId);
     }
 
-    public List<User> getMutualFriends(long userId, long friendId) {
+    public Collection<User> getMutualFriends(long userId, long friendId) {
         log.debug("{} getMutualFriends {}", storage.getUserById(userId), storage.getUserById(friendId));
-        return storage.getUserById(userId).getFriends().stream()
-                .filter(storage.getUserById(friendId).getFriends()::contains)
-                .map(storage::getUserById)
-                .toList();
+        return storage.findAllMutualFriends(userId,friendId);
     }
 }

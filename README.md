@@ -23,13 +23,12 @@
          f.description,
          f.release_date,
          f.duration,
-         r.rating,
-         COUNT(l.user_id) AS popularity
+         r.rating
   FROM films AS f
   JOIN rating_mpa AS r ON r.id = f.rating_id
   JOIN likes AS l ON l.film_id = f.id
   GROUP BY l.film_id
-  ORDER BY popularity DESC
+  ORDER BY COUNT(l.user_id) DESC
   LIMIT 10;
   ```
 - список общих друзей `@user_1` и `@user_2`

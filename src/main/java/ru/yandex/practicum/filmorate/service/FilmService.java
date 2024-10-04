@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
@@ -38,12 +39,16 @@ public class FilmService {
     }
 
     public void addLike(long filmId, long userId) {
-        filmStorage.getFilmById(filmId).addLike(userStorage.getUserById(userId).getId());
+        filmStorage.getFilmById(filmId).addLike(userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"))
+                .getId());
         log.debug("{} addLike {}", filmStorage.getFilmById(filmId), userStorage.getUserById(userId));
     }
 
     public void removeLike(long filmId, long userId) {
-        filmStorage.getFilmById(filmId).removeLike(userStorage.getUserById(userId).getId());
+        filmStorage.getFilmById(filmId).removeLike(userStorage.getUserById(userId)
+                .orElseThrow(() -> new NotFoundException("Пользователь не найден"))
+                .getId());
         log.debug("{} removeLike {}", filmStorage.getFilmById(filmId), userStorage.getUserById(userId));
     }
 
@@ -55,4 +60,3 @@ public class FilmService {
                 .toList();
     }
 }
-
