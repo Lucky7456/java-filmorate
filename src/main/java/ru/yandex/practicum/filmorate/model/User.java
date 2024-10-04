@@ -12,14 +12,14 @@ import java.util.Set;
 @Data
 public class User {
     private Long id;
-    @NotBlank
-    @Email
-    private String email;
+    @Getter(AccessLevel.NONE)
+    private String name;
     @NotNull
     @Pattern(regexp = "\\S+")
     private String login;
-    @Getter(AccessLevel.NONE)
-    private String name;
+    @NotBlank
+    @Email
+    private String email;
     @NotNull
     @PastOrPresent
     private LocalDate birthday;
