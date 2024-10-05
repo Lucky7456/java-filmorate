@@ -8,14 +8,14 @@
 - для получения списка всех фильмов:
   ```sql
   SELECT *
-  FROM film AS f
+  FROM films AS f
   JOIN rating_mpa AS r 
     ON r.id = f.rating_id;
   ```
 - для получения списка всех пользователей:
   ```sql
   SELECT *
-  FROM user;
+  FROM users;
   ```
 - список 10 наиболее популярных фильмов:
   ```sql

@@ -3,14 +3,12 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.RatingMpa;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
 
 @Slf4j
 @Service
@@ -25,6 +23,9 @@ public class FilmService {
 
     public Film create(Film film) {
         log.debug("create {}", film);
+        if (film.getMpa() == null) {
+            film.setMpa(new RatingMpa(1, "G"));
+        }
         return filmStorage.create(film);
     }
 
@@ -33,30 +34,23 @@ public class FilmService {
         return filmStorage.update(film);
     }
 
-    public Film delete(Film film) {
+    public boolean delete(Film film) {
         log.debug("delete {}", film);
         return filmStorage.delete(film);
     }
 
     public void addLike(long filmId, long userId) {
-        filmStorage.getFilmById(filmId).addLike(userStorage.getUserById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"))
-                .getId());
+        filmStorage.addLike(filmId, userId);
         log.debug("{} addLike {}", filmStorage.getFilmById(filmId), userStorage.getUserById(userId));
     }
 
     public void removeLike(long filmId, long userId) {
-        filmStorage.getFilmById(filmId).removeLike(userStorage.getUserById(userId)
-                .orElseThrow(() -> new NotFoundException("Пользователь не найден"))
-                .getId());
+        filmStorage.removeLike(filmId, userId);
         log.debug("{} removeLike {}", filmStorage.getFilmById(filmId), userStorage.getUserById(userId));
     }
 
-    public List<Film> getTenMostPopularFilms(long count) {
+    public Collection<Film> getTenMostPopularFilms(int count) {
         log.debug("popular films count {}", count);
-        return findAll().stream()
-                .sorted(Comparator.comparing(Film::popularity).reversed())
-                .limit(count)
-                .toList();
+        return filmStorage.findMostPopularFilms(count);
     }
 }
