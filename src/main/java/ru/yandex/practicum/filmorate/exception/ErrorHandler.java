@@ -6,6 +6,8 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.util.Arrays;
+
 @RestControllerAdvice("ru.yandex.practicum.filmorate.controller")
 public class ErrorHandler {
     @ExceptionHandler
@@ -23,6 +25,6 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ErrorResponse handle(final Throwable e) {
-        return new ErrorResponse("Произошла непредвиденная ошибка." + e.getMessage());
+        return new ErrorResponse("Произошла непредвиденная ошибка." + e.getMessage() + "\n" + Arrays.toString(e.getStackTrace()));
     }
 }

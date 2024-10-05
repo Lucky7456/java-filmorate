@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS films (
     description VARCHAR(200) NOT NULL,
     release_date DATE NOT NULL,
     duration SMALLINT NOT NULL,
-    rating_id TINYINT REFERENCES rating_mpa(id)
+    rating_id TINYINT NOT NULL REFERENCES rating_mpa(id)
 );
 
 CREATE TABLE IF NOT EXISTS genres (

@@ -36,13 +36,19 @@ public class BaseStorage<T> {
     }
     
     protected boolean update(String query, Object... params) {
-        if (jdbc.update(query, params) > 0) {
-            return true;
+        try {
+            return jdbc.update(query, params) == 1;
+        } catch (EmptyResultDataAccessException ignored) {
+            return false;
         }
-        throw new RuntimeException("Не удалось обновить данные");
     }
     
-    protected Integer exists(String query, Object... params) {
-        return jdbc.queryForObject(query, Integer.class, params);
+    protected Optional<Integer> exists(String query, Object... params) {
+        try {
+            Integer result = jdbc.queryForObject(query, Integer.class, params);
+            return Optional.ofNullable(result);
+        } catch (EmptyResultDataAccessException ignored) {
+            return Optional.empty();
+        }
     }
 }

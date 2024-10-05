@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.storage;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.BaseStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
@@ -67,7 +68,7 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     
     @Override
     public Film update(Film film) {
-        update(
+        if (update(
                 UPDATE_QUERY,
                 film.getName(),
                 film.getDescription(),
@@ -75,8 +76,10 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
                 film.getDuration(),
                 film.getMpa().getId(),
                 film.getId()
-        );
-        return film;
+        )) {
+            return film;
+        }
+        throw new NotFoundException("film not found");
     }
     
     @Override
