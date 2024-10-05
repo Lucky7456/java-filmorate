@@ -9,5 +9,5 @@ import lombok.Data;
 public class RatingMpa {
     private Integer id;
     @NotBlank
-    private String rating;
+    private String name;
 }
