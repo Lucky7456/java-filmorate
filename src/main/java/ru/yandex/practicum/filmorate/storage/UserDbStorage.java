@@ -26,9 +26,9 @@ public class UserDbStorage extends BaseStorage<User> implements UserStorage {
             "FROM users " +
             "WHERE id IN (SELECT f1.user_id " +
             "FROM friends AS f1 " +
-            "JOIN friends AS f2 ON f1.user_id = f2.user_id" +
-            "JOIN friend_request AS fr ON fr.id = f1.friend_request_id AND fr.id = f2.friend_request_id " +
-            "WHERE f1.friend_id = 2 AND f2.friend_id = 4)";
+            "JOIN friends AS f2 ON f1.user_id = f2.user_id " +
+            "JOIN friend_request AS fr ON fr.id = f1.friend_request_id " +
+            "WHERE f1.friend_id = ? AND f2.friend_id = ?)";
     private static final String UPDATE_QUERY =
             "UPDATE users SET name = ?, login = ?, email = ?, birthday = ? " +
             "WHERE id = ?";

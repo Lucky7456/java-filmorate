@@ -16,21 +16,11 @@ import java.util.Optional;
 public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     private static final String TABLE_NAME = "films";
     private static final String FIND_ALL_QUERY =
-            "SELECT f.id, " +
-                   "f.name, " +
-                   "f.description, " +
-                   "f.release_date, " +
-                   "f.duration, " +
-                   "r.rating" +
-            "FROM films AS f" +
+            "SELECT f.*, r.rating " +
+            "FROM films AS f " +
             "JOIN rating_mpa AS r ON r.id = f.rating_id";
     private static final String FIND_MOST_POPULAR_QUERY =
-            "SELECT f.id, " +
-                   "f.name, " +
-                   "f.description, " +
-                   "f.release_date, " +
-                   "f.duration, " +
-                   "r.rating " +
+            "SELECT f.*, r.rating " +
             "FROM films AS f " +
             "JOIN rating_mpa AS r ON r.id = f.rating_id " +
             "JOIN likes AS l ON l.film_id = f.id " +
@@ -44,18 +34,13 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     private static final String DELETE_QUERY =
             "DELETE FROM films WHERE id = ?";
     private static final String LIKE_INSERT_QUERY =
-            "INSERT INTO likes (film_id, user_id)" +
+            "INSERT INTO likes (film_id, user_id) " +
             "VALUES (?, ?)";
     private static final String LIKE_DELETE_QUERY =
             "DELETE FROM likes " +
             "WHERE film_id = ? AND user_id = ?";
     private static final String FIND_BY_ID_QUERY =
-            "SELECT f.id, " +
-                   "f.name, " +
-                   "f.description, " +
-                   "f.release_date, " +
-                   "f.duration, " +
-                   "r.rating" +
+            "SELECT f.*, r.rating " +
             "FROM films AS f " +
             "JOIN rating_mpa AS r ON r.id = f.rating_id " +
             "WHERE f.id = ?";

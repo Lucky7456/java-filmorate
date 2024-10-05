@@ -4,7 +4,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.RatingMpa;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
@@ -23,9 +22,6 @@ public class FilmService {
 
     public Film create(Film film) {
         log.debug("create {}", film);
-        if (film.getMpa() == null) {
-            film.setMpa(new RatingMpa(1, "G"));
-        }
         return filmStorage.create(film);
     }
 
