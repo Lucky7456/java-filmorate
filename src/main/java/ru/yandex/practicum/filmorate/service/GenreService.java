@@ -19,10 +19,6 @@ public class GenreService {
         return storage.findAll();
     }
     
-    public Collection<Genre> findFilmGenres(long filmId) {
-        return storage.findFilmGenres(filmId);
-    }
-    
     public Genre getGenreById(int id) {
         return storage.getGenreById(id)
                 .orElseThrow(() -> new NotFoundException("genre not found"));

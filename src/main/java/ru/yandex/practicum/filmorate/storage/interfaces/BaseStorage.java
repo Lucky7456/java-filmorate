@@ -36,11 +36,7 @@ public class BaseStorage<T> {
     }
     
     protected boolean update(String query, Object... params) {
-        try {
-            return jdbc.update(query, params) == 1;
-        } catch (EmptyResultDataAccessException ignored) {
-            return false;
-        }
+        return jdbc.update(query, params) == 1;
     }
     
     protected Optional<Integer> exists(String query, Object... params) {

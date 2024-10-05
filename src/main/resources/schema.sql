@@ -19,7 +19,8 @@ CREATE TABLE IF NOT EXISTS films (
 
 CREATE TABLE IF NOT EXISTS genres (
     film_id BIGINT NOT NULL REFERENCES films(id),
-    genre_id TINYINT NOT NULL REFERENCES genre(id)
+    genre_id TINYINT NOT NULL REFERENCES genre(id),
+    CONSTRAINT uq_genres UNIQUE(film_id, genre_id)
 );
 
 CREATE TABLE IF NOT EXISTS friend_request (

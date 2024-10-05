@@ -83,18 +83,18 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     }
     
     @Override
-    public boolean delete(Film film) {
-        return update(DELETE_QUERY, film.getId());
+    public void delete(Film film) {
+        update(DELETE_QUERY, film.getId());
     }
     
     @Override
-    public boolean addLike(long filmId, long userId) {
-        return update(LIKE_INSERT_QUERY, filmId, userId);
+    public void addLike(long filmId, long userId) {
+        update(LIKE_INSERT_QUERY, filmId, userId);
     }
     
     @Override
-    public boolean removeLike(long filmId, long userId) {
-        return update(LIKE_DELETE_QUERY, filmId, userId);
+    public void removeLike(long filmId, long userId) {
+        update(LIKE_DELETE_QUERY, filmId, userId);
     }
     
     @Override

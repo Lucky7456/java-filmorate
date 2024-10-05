@@ -10,7 +10,7 @@ import java.sql.SQLException;
 @Component
 public class RatingMpaRowMapper implements RowMapper<RatingMpa> {
     @Override
-    public RatingMpa mapRow(ResultSet rs, int rowNum) throws SQLException {
+    public RatingMpa mapRow(ResultSet rs, int ignored) throws SQLException {
         return new RatingMpa(
                 rs.getInt("id"),
                 rs.getString("rating")

@@ -12,3 +12,7 @@ VALUES ('Комедия'),
        ('Триллер'),
        ('Документальный'),
        ('Боевик');
+
+INSERT INTO friend_request (status)
+VALUES (0),
+       (1);

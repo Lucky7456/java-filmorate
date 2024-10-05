@@ -14,11 +14,11 @@ public interface FilmStorage {
 
     Film update(Film film);
 
-    boolean delete(Film film);
+    void delete(Film film);
     
-    boolean addLike(long filmId, long userId);
+    void addLike(long filmId, long userId);
     
-    boolean removeLike(long filmId, long userId);
+    void removeLike(long filmId, long userId);
 
     Optional<Film> getFilmById(long id);
 }
