@@ -79,8 +79,7 @@ public class UserDbStorage extends BaseStorage<User> implements UserStorage {
     
     @Override
     public Collection<User> findAllMutualFriends(long userId, long otherId) {
-        if (exists(USERS_EXISTS_QUERY, userId, otherId)
-                .orElse(0) == 2) {
+        if (exists(USERS_EXISTS_QUERY, userId, otherId).orElse(0) == 2) {
             return findMany(FIND_ALL_MUTUAL_FRIENDS_QUERY, userId, otherId);
         }
         throw new NotFoundException("users not found");
@@ -114,11 +113,9 @@ public class UserDbStorage extends BaseStorage<User> implements UserStorage {
     
     @Override
     public boolean addFriend(long userId, long friendId) {
-        if (exists(FRIEND_REQUEST_EXISTS_QUERY, userId, friendId)
-                .orElse(0) == 1) {
+        if (exists(FRIEND_REQUEST_EXISTS_QUERY, userId, friendId).orElse(0) == 1) {
             return update(FRIENDS_UPDATE_QUERY, userId, friendId);
-        } else if (exists(USERS_EXISTS_QUERY, userId, friendId)
-                .orElse(0) == 2) {
+        } else if (exists(USERS_EXISTS_QUERY, userId, friendId).orElse(0) == 2) {
             return update(FRIENDS_INSERT_QUERY, userId, friendId);
         }
         throw new NotFoundException("users not found");
@@ -126,8 +123,7 @@ public class UserDbStorage extends BaseStorage<User> implements UserStorage {
     
     @Override
     public boolean removeFriend(long userId, long friendId) {
-        if (exists(USERS_EXISTS_QUERY, userId, friendId)
-                .orElse(0) == 2) {
+        if (exists(USERS_EXISTS_QUERY, userId, friendId).orElse(0) == 2) {
             return update(FRIENDS_DELETE_QUERY, userId, friendId);
         }
         throw new NotFoundException("user not found");
