@@ -72,22 +72,19 @@ public class UserDbStorage extends BaseCrudStorage<User> implements UserStorage 
     }
     
     @Override
-    public void addFriend(long userId, long friendId) {
+    public int addFriend(long userId, long friendId) {
         if (count(FRIEND_REQUEST_EXISTS_QUERY, userId, friendId).orElse(0) == 1) {
-            update(FRIENDS_UPDATE_QUERY, userId, friendId);
-            return;
+            return update(FRIENDS_UPDATE_QUERY, userId, friendId);
         } else if (count(USERS_EXISTS_QUERY, userId, friendId).orElse(0) == 2) {
-            update(FRIENDS_INSERT_QUERY, userId, friendId);
-            return;
+            return update(FRIENDS_INSERT_QUERY, userId, friendId);
         }
         throw new NotFoundException("users not found");
     }
     
     @Override
-    public void removeFriend(long userId, long friendId) {
+    public int removeFriend(long userId, long friendId) {
         if (count(USERS_EXISTS_QUERY, userId, friendId).orElse(0) == 2) {
-            update(FRIENDS_DELETE_QUERY, userId, friendId);
-            return;
+            return update(FRIENDS_DELETE_QUERY, userId, friendId);
         }
         throw new NotFoundException("user not found");
     }

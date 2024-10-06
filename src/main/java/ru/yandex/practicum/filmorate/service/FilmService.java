@@ -34,7 +34,7 @@ public class FilmService {
         
         if (Objects.nonNull(film.getGenres())) {
             saveFilmGenres(film.getId(), film.getGenres());
-            film.setGenres(new ArrayList<>(genreStorage.findAllById(film.getId())));
+            film.setGenres(new ArrayList<>(genreStorage.findAllBy(film.getId())));
         }
         
         film.setMpa(
@@ -47,21 +47,21 @@ public class FilmService {
 
     public Film update(Film film) {
         log.debug("update {}", film);
-        if (!filmStorage.update(
+        if (filmStorage.update(
                 film.getName(),
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
                 film.getMpa().getId(),
                 film.getId()
-        )) {
+        ) != 1) {
             throw new NotFoundException("film not found");
         }
         
         if (Objects.nonNull(film.getGenres())) {
             filmStorage.deleteFilmGenres(film.getId());
             saveFilmGenres(film.getId(), film.getGenres());
-            film.setGenres(new ArrayList<>(genreStorage.findAllById(film.getId())));
+            film.setGenres(new ArrayList<>(genreStorage.findAllBy(film.getId())));
         }
         
         film.setMpa(
@@ -82,9 +82,9 @@ public class FilmService {
         log.debug("{} removeLike {}", filmId, userId);
     }
 
-    public Collection<Film> getTenMostPopularFilms(int count) {
+    public Collection<Film> getMostPopularFilms(int count) {
         log.debug("popular films count {}", count);
-        return filmStorage.findAllById(count);
+        return filmStorage.findAllBy(count);
     }
     
     public Film getFilmById(long id) {
@@ -95,7 +95,7 @@ public class FilmService {
         film.setMpa(ratingMpaStorage.findOneById(film.getMpa().getId())
                 .orElseThrow(() -> new NotFoundException("rating not found")));
         
-        film.setGenres(new ArrayList<>(genreStorage.findAllById(id)));
+        film.setGenres(new ArrayList<>(genreStorage.findAllBy(id)));
         
         return film;
     }

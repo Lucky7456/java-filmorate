@@ -11,7 +11,7 @@ public interface QueryExecutor<T> {
     
     long save(Map<String, Object> map, String tableName);
     
-    boolean update(String query, Object... params);
+    int update(String query, Object... params);
     
     Optional<Integer> count(String query, Object... params);
 }

@@ -39,8 +39,8 @@ public abstract class BaseQueryExecutor<T> implements QueryExecutor<T>{
     }
     
     @Override
-    public boolean update(String query, Object... params) {
-        return jdbc.update(query, params) == 1;
+    public int update(String query, Object... params) {
+        return jdbc.update(query, params);
     }
     
     @Override

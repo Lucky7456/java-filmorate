@@ -18,8 +18,8 @@ CREATE TABLE IF NOT EXISTS films (
 );
 
 CREATE TABLE IF NOT EXISTS genres (
-    film_id BIGINT NOT NULL REFERENCES films(id),
-    genre_id TINYINT NOT NULL REFERENCES genre(id),
+    film_id BIGINT NOT NULL REFERENCES films(id) ON DELETE CASCADE,
+    genre_id TINYINT NOT NULL REFERENCES genre(id) ON DELETE CASCADE,
     CONSTRAINT uq_genres UNIQUE(film_id, genre_id)
 );
 
@@ -37,12 +37,12 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS friends (
-    user_id BIGINT NOT NULL REFERENCES users(id),
-    friend_id BIGINT NOT NULL REFERENCES users(id),
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    friend_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     friend_request_id TINYINT NOT NULL REFERENCES friend_request(id)
 );
 
 CREATE TABLE IF NOT EXISTS likes (
-    film_id BIGINT NOT NULL REFERENCES films(id),
-    user_id BIGINT NOT NULL REFERENCES users(id)
+    film_id BIGINT NOT NULL REFERENCES films(id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );

@@ -27,13 +27,13 @@ public class UserService {
 
     public User update(User user) {
         log.debug("update {}", user);
-        if (!storage.update(
+        if (storage.update(
                 user.getName(),
                 user.getLogin(),
                 user.getEmail(),
                 user.getBirthday(),
                 user.getId()
-        )) {
+        ) != 1) {
             throw new NotFoundException("user not found");
         }
         return user;
@@ -53,7 +53,7 @@ public class UserService {
         log.debug("findFriends {}", userId);
         User user = storage.findOneById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
-        return storage.findAllById(user.getId());
+        return storage.findAllBy(user.getId());
     }
 
     public Collection<User> getMutualFriends(long userId, long friendId) {

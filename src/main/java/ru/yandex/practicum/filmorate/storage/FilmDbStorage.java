@@ -53,27 +53,27 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
     }
     
     @Override
-    public void addLike(long filmId, long userId) {
-        update(LIKE_INSERT_QUERY, filmId, userId);
+    public int addLike(long filmId, long userId) {
+        return update(LIKE_INSERT_QUERY, filmId, userId);
     }
     
     @Override
-    public void removeLike(long filmId, long userId) {
-        update(LIKE_DELETE_QUERY, filmId, userId);
+    public int removeLike(long filmId, long userId) {
+        return update(LIKE_DELETE_QUERY, filmId, userId);
     }
     
     @Override
-    public void deleteFilmGenres(long filmId) {
-        update(DELETE_FILM_GENRES_QUERY, filmId);
-    }
-    
-    @Override
-    public void saveFilmGenre(long filmId, int genreId) {
+    public int saveFilmGenre(long filmId, int genreId) {
         try {
-            update(INSERT_FILM_GENRES_QUERY, filmId, genreId);
+            return update(INSERT_FILM_GENRES_QUERY, filmId, genreId);
         } catch (DataAccessException ignored) {
-        
+            return 0;
         }
+    }
+    
+    @Override
+    public int deleteFilmGenres(long filmId) {
+        return update(DELETE_FILM_GENRES_QUERY, filmId);
     }
     
     @Override

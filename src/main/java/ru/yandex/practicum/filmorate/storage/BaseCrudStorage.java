@@ -33,7 +33,7 @@ public abstract class BaseCrudStorage<T> extends BaseCollectionStorage<T> implem
     }
     
     @Override
-    public boolean update(Object... params) {
+    public int update(Object... params) {
         return update(update, params);
     }
     
