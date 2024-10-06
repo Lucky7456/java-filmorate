@@ -1,10 +1,7 @@
 package ru.yandex.practicum.filmorate.model;
 
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validator;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import ru.yandex.practicum.filmorate.interfaces.BaseFilmTest;
 
 import java.time.LocalDate;
@@ -12,11 +9,7 @@ import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
 public class FilmTest extends BaseFilmTest {
-    @Autowired
-    private Validator validator;
-
     @Test
     void shouldFailEmptyFilm() {
         Film emptyFilm = new Film();
