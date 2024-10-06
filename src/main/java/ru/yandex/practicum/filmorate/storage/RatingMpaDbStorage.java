@@ -12,7 +12,7 @@ public class RatingMpaDbStorage extends BaseEntityStorage<RatingMpa> implements 
             "SELECT * FROM rating_mpa";
     private static final String FIND_BY_ID_QUERY =
             "SELECT * FROM rating_mpa WHERE id = ?";
-    
+
     public RatingMpaDbStorage(JdbcTemplate jdbc, RowMapper<RatingMpa> mapper) {
         super(jdbc, mapper, FIND_ALL_QUERY, FIND_BY_ID_QUERY);
     }

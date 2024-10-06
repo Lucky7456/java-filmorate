@@ -11,7 +11,7 @@ import java.util.Optional;
 public abstract class BaseEntityStorage<T> extends BaseQueryExecutor<T> implements EntityStorage<T> {
     protected final String findAll;
     protected final String findOneById;
-    
+
     public BaseEntityStorage(
             JdbcTemplate jdbc,
             RowMapper<T> mapper,
@@ -22,12 +22,12 @@ public abstract class BaseEntityStorage<T> extends BaseQueryExecutor<T> implemen
         this.findAll = findAll;
         this.findOneById = findOneById;
     }
-    
+
     @Override
     public List<T> findAll() {
         return findMany(findAll);
     }
-    
+
     @Override
     public Optional<T> findOneById(long id) {
         return findOne(findOneById, id);

@@ -1,7 +1,8 @@
 # java-filmorate
-## Схема базы данных
-![database schema](dbschema.png)
 
+## Схема базы данных
+
+![database schema](dbschema.png)
 
 ### Примеры запросов
 

@@ -22,7 +22,7 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final GenreStorage genreStorage;
     private final RatingMpaStorage ratingMpaStorage;
-    
+
     public List<Film> findAll() {
         return filmStorage.findAll();
     }
@@ -30,17 +30,17 @@ public class FilmService {
     public Film create(Film film) {
         log.debug("create {}", film);
         film.setId(filmStorage.create(film));
-        
+
         if (Objects.nonNull(film.getGenres())) {
             saveFilmGenres(film.getId(), film.getGenres());
             film.setGenres(genreStorage.findAllBy(film.getId()));
         }
-        
+
         film.setMpa(
                 ratingMpaStorage.findOneById(film.getMpa().getId())
                         .orElseThrow(() -> new SQLDataException("rating not found"))
         );
-        
+
         return film;
     }
 
@@ -56,18 +56,18 @@ public class FilmService {
         ) != 1) {
             throw new NotFoundException("film not found");
         }
-        
+
         if (Objects.nonNull(film.getGenres())) {
             filmStorage.deleteFilmGenres(film.getId());
             saveFilmGenres(film.getId(), film.getGenres());
             film.setGenres(genreStorage.findAllBy(film.getId()));
         }
-        
+
         film.setMpa(
                 ratingMpaStorage.findOneById(film.getMpa().getId())
                         .orElseThrow(() -> new NotFoundException("rating not found"))
         );
-        
+
         return film;
     }
 
@@ -80,25 +80,25 @@ public class FilmService {
         filmStorage.removeLike(filmId, userId);
         log.debug("{} removeLike {}", filmId, userId);
     }
-    
+
     public List<Film> getMostPopularFilms(int count) {
         log.debug("popular films count {}", count);
         return filmStorage.findAllBy(count);
     }
-    
+
     public Film getFilmById(long id) {
         log.debug("getFilmById {}", id);
         Film film = filmStorage.findOneById(id)
                 .orElseThrow(() -> new NotFoundException("film not found"));
-        
+
         film.setMpa(ratingMpaStorage.findOneById(film.getMpa().getId())
                 .orElseThrow(() -> new NotFoundException("rating not found")));
-        
+
         film.setGenres(new ArrayList<>(genreStorage.findAllBy(id)));
-        
+
         return film;
     }
-    
+
     private void saveFilmGenres(long filmId, List<Genre> genres) {
         for (Genre genre : genres) {
             log.trace("film {} save {} genre", filmId, genre.getId());

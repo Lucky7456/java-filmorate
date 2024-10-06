@@ -24,17 +24,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class FilmStorageTest {
     private final FilmStorage storage;
-    
+
     @Test
     public void testFindAllFilms() {
         assertThat(storage.findAll()).hasSize(5);
     }
-    
+
     @Test
     public void testFindFilmById() {
         long id = 1L;
         Optional<Film> filmOptional = storage.findOneById(id);
-        
+
         assertThat(filmOptional)
                 .isPresent()
                 .hasValueSatisfying(
@@ -42,16 +42,16 @@ public class FilmStorageTest {
                                 .hasFieldOrPropertyWithValue("id", id)
                 );
     }
-    
+
     @Test
     public void testFindLimitedAmountOfFilmsSortedByPopularity() {
         int count = 3;
-        
+
         assertThat(storage.findAllBy(count))
                 .hasOnlyElementsOfType(Film.class)
                 .hasSizeLessThanOrEqualTo(count);
     }
-    
+
     @Test
     public void testPersistCreatesEntityFilm() {
         Film film = new Film();
@@ -61,25 +61,25 @@ public class FilmStorageTest {
         film.setDuration(1);
         film.setMpa(new RatingMpa(1, "G"));
         film.setGenres(new ArrayList<>());
-        
+
         long id = storage.create(film);
-        
+
         film.setId(id);
-        
+
         assertThat(storage.findOneById(id))
                 .isPresent()
                 .hasValue(film);
     }
-    
+
     @Test
     public void testShouldUpdateFilmSuccessfully() {
         long id = 1L;
-        
+
         Film film = storage.findOneById(id)
                 .orElseThrow(() -> new NotFoundException("film not found"));
-        
+
         film.setDuration(10);
-        
+
         storage.update(
                 film.getName(),
                 film.getDescription(),
@@ -88,46 +88,46 @@ public class FilmStorageTest {
                 film.getMpa().getId(),
                 film.getId()
         );
-        
+
         assertThat(storage.findOneById(id)).hasValue(film);
     }
-    
+
     @Test
     public void testShouldDeleteFilmSuccessfully() {
         long id = 1L;
         storage.delete(id);
-        
+
         assertThat(storage.findOneById(id)).isEmpty();
     }
-    
+
     @Test
     public void testShouldAddLikeToFilmFromUser() {
         long filmId = 4L;
         long userId = 1L;
-        
+
         assertThat(storage.addLike(filmId, userId)).isEqualTo(1);
     }
-    
+
     @Test
     public void testShouldRemoveLikeToFilmFromUser() {
         long filmId = 1L;
         long userId = 1L;
-        
+
         assertThat(storage.removeLike(filmId, userId)).isEqualTo(1);
     }
-    
+
     @Test
     public void testShouldSaveFilmGenre() {
         long filmId = 1L;
         int genreId = 1;
-        
+
         assertThat(storage.saveFilmGenre(filmId, genreId)).isEqualTo(1);
     }
-    
+
     @Test
     public void testShouldDeleteFilmGenres() {
         long filmId = 3L;
-        
+
         assertThat(storage.deleteFilmGenres(filmId)).isGreaterThanOrEqualTo(1);
     }
 }

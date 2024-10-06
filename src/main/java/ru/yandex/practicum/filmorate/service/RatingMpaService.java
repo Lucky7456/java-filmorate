@@ -14,14 +14,14 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RatingMpaService {
     private final RatingMpaStorage storage;
-    
+
     public List<RatingMpa> findAll() {
         return storage.findAll();
     }
-    
+
     public RatingMpa getRatingMpaById(int id) {
         log.debug("getRatingMpaById {}", id);
         return storage.findOneById(id)
-                .orElseThrow(()-> new NotFoundException("ratingMpa not found"));
+                .orElseThrow(() -> new NotFoundException("ratingMpa not found"));
     }
 }

@@ -15,12 +15,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class RatingMpaController {
     private final RatingMpaService service;
-    
+
     @GetMapping
     public List<RatingMpa> findAll() {
         return service.findAll();
     }
-    
+
     @GetMapping("/{id}")
     public RatingMpa getRatingMpaById(@PathVariable int id) {
         return service.getRatingMpaById(id);

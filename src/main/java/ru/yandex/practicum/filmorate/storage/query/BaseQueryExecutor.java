@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public abstract class BaseQueryExecutor<T> implements QueryExecutor<T>{
+public abstract class BaseQueryExecutor<T> implements QueryExecutor<T> {
     protected final JdbcTemplate jdbc;
     protected final RowMapper<T> mapper;
-    
+
     @Override
     public Optional<T> findOne(String query, Object... params) {
         try {
@@ -24,12 +24,12 @@ public abstract class BaseQueryExecutor<T> implements QueryExecutor<T>{
             return Optional.empty();
         }
     }
-    
+
     @Override
     public List<T> findMany(String query, Object... params) {
         return jdbc.query(query, mapper, params);
     }
-    
+
     @Override
     public long save(Map<String, Object> map, String tableName) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbc)
@@ -37,12 +37,12 @@ public abstract class BaseQueryExecutor<T> implements QueryExecutor<T>{
                 .usingGeneratedKeyColumns("id");
         return simpleJdbcInsert.executeAndReturnKey(map).longValue();
     }
-    
+
     @Override
     public int update(String query, Object... params) {
         return jdbc.update(query, params);
     }
-    
+
     @Override
     public Optional<Integer> count(String query, Object... params) {
         try {

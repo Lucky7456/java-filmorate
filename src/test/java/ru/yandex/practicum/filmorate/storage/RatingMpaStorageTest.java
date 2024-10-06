@@ -20,17 +20,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class RatingMpaStorageTest {
     private final RatingMpaStorage storage;
-    
+
     @Test
     public void testFindAllMpaRatings() {
         assertThat(storage.findAll()).hasSize(5);
     }
-    
+
     @Test
     public void testFindMpaRatingById() {
         int id = 1;
         Optional<RatingMpa> ratingMpaOptional = storage.findOneById(id);
-        
+
         assertThat(ratingMpaOptional)
                 .isPresent()
                 .hasValueSatisfying(

@@ -14,7 +14,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
     private final UserStorage storage;
-    
+
     public List<User> findAll() {
         return storage.findAll();
     }
@@ -48,16 +48,16 @@ public class UserService {
         log.debug("userId {} removeFriend {}", userId, friendId);
         storage.removeFriend(userId, friendId);
     }
-    
+
     public List<User> findFriends(long userId) {
         log.debug("findFriends {}", userId);
         User user = storage.findOneById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         return storage.findAllBy(user.getId());
     }
-    
+
     public List<User> getMutualFriends(long userId, long friendId) {
         log.debug("userId {} getMutualFriends {}", userId, friendId);
-        return storage.findAllMutualFriends(userId,friendId);
+        return storage.findAllMutualFriends(userId, friendId);
     }
 }

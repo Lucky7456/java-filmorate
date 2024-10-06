@@ -14,11 +14,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class GenreService {
     private final GenreStorage storage;
-    
+
     public List<Genre> findAll() {
         return storage.findAll();
     }
-    
+
     public Genre getGenreById(int id) {
         log.debug("getGenreById {}", id);
         return storage.findOneById(id)

@@ -10,7 +10,7 @@ public abstract class BaseCrudStorage<T> extends BaseCollectionStorage<T> implem
     private final String table;
     private final String update;
     private final String delete;
-    
+
     public BaseCrudStorage(
             JdbcTemplate jdbc,
             RowMapper<T> mapper,
@@ -26,21 +26,21 @@ public abstract class BaseCrudStorage<T> extends BaseCollectionStorage<T> implem
         this.update = update;
         this.delete = delete;
     }
-    
+
     @Override
     public long create(T entity) {
         return save(toMap(entity), table);
     }
-    
+
     @Override
     public int update(Object... params) {
         return update(update, params);
     }
-    
+
     @Override
     public void delete(long id) {
         update(delete, id);
     }
-    
+
     protected abstract Map<String, Object> toMap(T entity);
 }

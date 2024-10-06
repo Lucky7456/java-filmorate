@@ -20,17 +20,17 @@ import static org.assertj.core.api.Assertions.assertThat;
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
 public class GenreStorageTest {
     private final GenreStorage storage;
-    
+
     @Test
     public void testFindAllGenres() {
         assertThat(storage.findAll()).hasSize(6);
     }
-    
+
     @Test
     public void testFindGenreById() {
         int id = 1;
         Optional<Genre> genreOptional = storage.findOneById(id);
-        
+
         assertThat(genreOptional)
                 .isPresent()
                 .hasValueSatisfying(
@@ -38,11 +38,11 @@ public class GenreStorageTest {
                                 .hasFieldOrPropertyWithValue("id", id)
                 );
     }
-    
+
     @Test
     public void testFindAllGenresOfFilm() {
         long id = 4L;
-        
+
         assertThat(storage.findAllBy(id))
                 .hasOnlyElementsOfType(Genre.class)
                 .hasSize(3);

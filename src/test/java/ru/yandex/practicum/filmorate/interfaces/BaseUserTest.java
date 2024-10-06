@@ -10,7 +10,7 @@ import java.time.LocalDate;
 public class BaseUserTest {
     protected final User user = new User();
     protected Validator validator;
-    
+
     @BeforeEach
     void setUp() {
         validator = Validation.buildDefaultValidatorFactory().getValidator();

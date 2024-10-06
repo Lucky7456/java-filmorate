@@ -8,6 +8,7 @@ import java.util.List;
 
 public abstract class BaseCollectionStorage<T> extends BaseEntityStorage<T> implements CollectionStorage<T> {
     protected final String findAllById;
+
     public BaseCollectionStorage(
             JdbcTemplate jdbc,
             RowMapper<T> mapper,
@@ -18,7 +19,7 @@ public abstract class BaseCollectionStorage<T> extends BaseEntityStorage<T> impl
         super(jdbc, mapper, findAll, findOneById);
         this.findAllById = findAllById;
     }
-    
+
     @Override
     public List<T> findAllBy(long id) {
         return findMany(findAllById, id);
