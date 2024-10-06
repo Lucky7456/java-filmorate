@@ -7,8 +7,8 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -64,7 +64,7 @@ public class UserDbStorage extends BaseCrudStorage<User> implements UserStorage 
     }
     
     @Override
-    public Collection<User> findAllMutualFriends(long userId, long otherId) {
+    public List<User> findAllMutualFriends(long userId, long otherId) {
         if (count(USERS_EXISTS_QUERY, userId, otherId).orElse(0) == 2) {
             return findMany(FIND_ALL_MUTUAL_FRIENDS_QUERY, userId, otherId);
         }

@@ -4,7 +4,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.storage.interfaces.CollectionStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 public abstract class BaseCollectionStorage<T> extends BaseEntityStorage<T> implements CollectionStorage<T> {
     protected final String findAllById;
@@ -20,7 +20,7 @@ public abstract class BaseCollectionStorage<T> extends BaseEntityStorage<T> impl
     }
     
     @Override
-    public Collection<T> findAllBy(long id) {
+    public List<T> findAllBy(long id) {
         return findMany(findAllById, id);
     }
 }

@@ -1,7 +1,7 @@
 package ru.yandex.practicum.filmorate.storage.interfaces;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface CollectionStorage<T> extends EntityStorage<T> {
-    Collection<T> findAllBy(long id);
+    List<T> findAllBy(long id);
 }

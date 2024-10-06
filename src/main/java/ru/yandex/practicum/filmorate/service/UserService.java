@@ -7,15 +7,15 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
     private final UserStorage storage;
-
-    public Collection<User> findAll() {
+    
+    public List<User> findAll() {
         return storage.findAll();
     }
 
@@ -48,15 +48,15 @@ public class UserService {
         log.debug("userId {} removeFriend {}", userId, friendId);
         storage.removeFriend(userId, friendId);
     }
-
-    public Collection<User> findFriends(long userId) {
+    
+    public List<User> findFriends(long userId) {
         log.debug("findFriends {}", userId);
         User user = storage.findOneById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         return storage.findAllBy(user.getId());
     }
-
-    public Collection<User> getMutualFriends(long userId, long friendId) {
+    
+    public List<User> getMutualFriends(long userId, long friendId) {
         log.debug("userId {} getMutualFriends {}", userId, friendId);
         return storage.findAllMutualFriends(userId,friendId);
     }

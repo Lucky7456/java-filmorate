@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.RatingMpa;
 import ru.yandex.practicum.filmorate.storage.interfaces.RatingMpaStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -15,7 +15,7 @@ import java.util.Collection;
 public class RatingMpaService {
     private final RatingMpaStorage storage;
     
-    public Collection<RatingMpa> findAll() {
+    public List<RatingMpa> findAll() {
         return storage.findAll();
     }
     

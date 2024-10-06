@@ -5,7 +5,7 @@ import org.springframework.jdbc.core.RowMapper;
 import ru.yandex.practicum.filmorate.storage.interfaces.EntityStorage;
 import ru.yandex.practicum.filmorate.storage.query.BaseQueryExecutor;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Optional;
 
 public abstract class BaseEntityStorage<T> extends BaseQueryExecutor<T> implements EntityStorage<T> {
@@ -24,7 +24,7 @@ public abstract class BaseEntityStorage<T> extends BaseQueryExecutor<T> implemen
     }
     
     @Override
-    public Collection<T> findAll() {
+    public List<T> findAll() {
         return findMany(findAll);
     }
     

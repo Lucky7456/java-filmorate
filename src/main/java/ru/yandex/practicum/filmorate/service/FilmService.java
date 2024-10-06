@@ -12,7 +12,6 @@ import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.RatingMpaStorage;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,8 +22,8 @@ public class FilmService {
     private final FilmStorage filmStorage;
     private final GenreStorage genreStorage;
     private final RatingMpaStorage ratingMpaStorage;
-
-    public Collection<Film> findAll() {
+    
+    public List<Film> findAll() {
         return filmStorage.findAll();
     }
 
@@ -34,7 +33,7 @@ public class FilmService {
         
         if (Objects.nonNull(film.getGenres())) {
             saveFilmGenres(film.getId(), film.getGenres());
-            film.setGenres(new ArrayList<>(genreStorage.findAllBy(film.getId())));
+            film.setGenres(genreStorage.findAllBy(film.getId()));
         }
         
         film.setMpa(
@@ -61,7 +60,7 @@ public class FilmService {
         if (Objects.nonNull(film.getGenres())) {
             filmStorage.deleteFilmGenres(film.getId());
             saveFilmGenres(film.getId(), film.getGenres());
-            film.setGenres(new ArrayList<>(genreStorage.findAllBy(film.getId())));
+            film.setGenres(genreStorage.findAllBy(film.getId()));
         }
         
         film.setMpa(
@@ -81,8 +80,8 @@ public class FilmService {
         filmStorage.removeLike(filmId, userId);
         log.debug("{} removeLike {}", filmId, userId);
     }
-
-    public Collection<Film> getMostPopularFilms(int count) {
+    
+    public List<Film> getMostPopularFilms(int count) {
         log.debug("popular films count {}", count);
         return filmStorage.findAllBy(count);
     }

@@ -6,7 +6,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
-import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -26,7 +26,7 @@ public abstract class BaseQueryExecutor<T> implements QueryExecutor<T>{
     }
     
     @Override
-    public Collection<T> findMany(String query, Object... params) {
+    public List<T> findMany(String query, Object... params) {
         return jdbc.query(query, mapper, params);
     }
     

@@ -7,7 +7,7 @@ import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
 
-import java.util.Collection;
+import java.util.List;
 
 @Slf4j
 @Service
@@ -15,7 +15,7 @@ import java.util.Collection;
 public class GenreService {
     private final GenreStorage storage;
     
-    public Collection<Genre> findAll() {
+    public List<Genre> findAll() {
         return storage.findAll();
     }
     

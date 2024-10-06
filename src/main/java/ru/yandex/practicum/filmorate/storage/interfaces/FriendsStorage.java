@@ -2,10 +2,10 @@ package ru.yandex.practicum.filmorate.storage.interfaces;
 
 import ru.yandex.practicum.filmorate.model.User;
 
-import java.util.Collection;
+import java.util.List;
 
 public interface FriendsStorage {
-    Collection<User> findAllMutualFriends(long userId, long otherId);
+    List<User> findAllMutualFriends(long userId, long otherId);
     
     int addFriend(long userId, long friendId);
     
