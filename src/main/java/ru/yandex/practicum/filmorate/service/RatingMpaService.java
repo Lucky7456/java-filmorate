@@ -20,7 +20,7 @@ public class RatingMpaService {
     }
     
     public RatingMpa getRatingMpaById(int id) {
-        return storage.getRatingById(id)
+        return storage.findOneById(id)
                 .orElseThrow(()-> new NotFoundException("ratingMpa not found"));
     }
 }

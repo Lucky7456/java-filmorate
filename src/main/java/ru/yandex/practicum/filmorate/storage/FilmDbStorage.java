@@ -1,20 +1,17 @@
 package ru.yandex.practicum.filmorate.storage;
 
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.storage.interfaces.BaseStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
-public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
+public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage {
     private static final String TABLE_NAME = "films";
     private static final String FIND_ALL_QUERY =
             "SELECT f.*, r.rating " +
@@ -45,46 +42,14 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
             "FROM films AS f " +
             "JOIN rating_mpa AS r ON r.id = f.rating_id " +
             "WHERE f.id = ?";
+    private static final String INSERT_FILM_GENRES_QUERY =
+            "INSERT INTO genres (film_id, genre_id) " +
+                    "VALUES (?, ?)";
+    private static final String DELETE_FILM_GENRES_QUERY =
+            "DELETE FROM genres WHERE film_id = ?";
     
     public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
-        super(jdbc, mapper);
-    }
-    
-    @Override
-    public Collection<Film> findAll() {
-        return findMany(FIND_ALL_QUERY);
-    }
-    
-    @Override
-    public Collection<Film> findMostPopularFilms(int count) {
-        return findMany(FIND_MOST_POPULAR_QUERY, count);
-    }
-    
-    @Override
-    public Film create(Film film) {
-        film.setId(simpleInsert(toMap(film), TABLE_NAME));
-        return film;
-    }
-    
-    @Override
-    public Film update(Film film) {
-        if (update(
-                UPDATE_QUERY,
-                film.getName(),
-                film.getDescription(),
-                film.getReleaseDate(),
-                film.getDuration(),
-                film.getMpa().getId(),
-                film.getId()
-        )) {
-            return film;
-        }
-        throw new NotFoundException("film not found");
-    }
-    
-    @Override
-    public void delete(Film film) {
-        update(DELETE_QUERY, film.getId());
+        super(jdbc, mapper, FIND_ALL_QUERY, FIND_BY_ID_QUERY, FIND_MOST_POPULAR_QUERY, TABLE_NAME, UPDATE_QUERY, DELETE_QUERY);
     }
     
     @Override
@@ -98,11 +63,21 @@ public class FilmDbStorage extends BaseStorage<Film> implements FilmStorage {
     }
     
     @Override
-    public Optional<Film> getFilmById(long id) {
-        return findOne(FIND_BY_ID_QUERY, id);
+    public void deleteFilmGenres(long filmId) {
+        update(DELETE_FILM_GENRES_QUERY, filmId);
     }
     
-    private Map<String, Object> toMap(Film film) {
+    @Override
+    public void saveFilmGenre(long filmId, int genreId) {
+        try {
+            update(INSERT_FILM_GENRES_QUERY, filmId, genreId);
+        } catch (DataAccessException ignored) {
+        
+        }
+    }
+    
+    @Override
+    protected Map<String, Object> toMap(Film film) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", film.getName());
         values.put("description", film.getDescription());

@@ -5,16 +5,14 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.storage.interfaces.BaseStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 @Repository
-public class UserDbStorage extends BaseStorage<User> implements UserStorage {
+public class UserDbStorage extends BaseCrudStorage<User> implements UserStorage {
     private static final String TABLE_NAME = "users";
     private static final String FIND_ALL_QUERY =
             "SELECT * FROM users";
@@ -62,79 +60,40 @@ public class UserDbStorage extends BaseStorage<User> implements UserStorage {
             "SELECT * FROM users WHERE id = ?";
     
     public UserDbStorage(JdbcTemplate jdbc, RowMapper<User> mapper) {
-        super(jdbc, mapper);
-    }
-    
-    @Override
-    public Collection<User> findAll() {
-        return findMany(FIND_ALL_QUERY);
-    }
-    
-    @Override
-    public Collection<User> findAllFriends(long userId) {
-        User user = getUserById(userId)
-                .orElseThrow(() -> new NotFoundException("user not found"));
-        return findMany(FIND_ALL_FRIENDS_QUERY, user.getId());
+        super(jdbc, mapper, FIND_ALL_QUERY, FIND_BY_ID_QUERY, FIND_ALL_FRIENDS_QUERY, TABLE_NAME, UPDATE_QUERY, DELETE_QUERY);
     }
     
     @Override
     public Collection<User> findAllMutualFriends(long userId, long otherId) {
-        if (exists(USERS_EXISTS_QUERY, userId, otherId).orElse(0) == 2) {
+        if (count(USERS_EXISTS_QUERY, userId, otherId).orElse(0) == 2) {
             return findMany(FIND_ALL_MUTUAL_FRIENDS_QUERY, userId, otherId);
         }
         throw new NotFoundException("users not found");
     }
     
     @Override
-    public User create(User user) {
-        user.setId(simpleInsert(toMap(user), TABLE_NAME));
-        return user;
-    }
-    
-    @Override
-    public User update(User user) {
-        if (update(
-                UPDATE_QUERY,
-                user.getName(),
-                user.getLogin(),
-                user.getEmail(),
-                user.getBirthday(),
-                user.getId()
-        )) {
-            return user;
-        }
-        throw new NotFoundException("user not found");
-    }
-    
-    @Override
-    public boolean delete(User user) {
-        return update(DELETE_QUERY, user.getId());
-    }
-    
-    @Override
-    public boolean addFriend(long userId, long friendId) {
-        if (exists(FRIEND_REQUEST_EXISTS_QUERY, userId, friendId).orElse(0) == 1) {
-            return update(FRIENDS_UPDATE_QUERY, userId, friendId);
-        } else if (exists(USERS_EXISTS_QUERY, userId, friendId).orElse(0) == 2) {
-            return update(FRIENDS_INSERT_QUERY, userId, friendId);
+    public void addFriend(long userId, long friendId) {
+        if (count(FRIEND_REQUEST_EXISTS_QUERY, userId, friendId).orElse(0) == 1) {
+            update(FRIENDS_UPDATE_QUERY, userId, friendId);
+            return;
+        } else if (count(USERS_EXISTS_QUERY, userId, friendId).orElse(0) == 2) {
+            update(FRIENDS_INSERT_QUERY, userId, friendId);
+            return;
         }
         throw new NotFoundException("users not found");
     }
     
     @Override
-    public boolean removeFriend(long userId, long friendId) {
-        if (exists(USERS_EXISTS_QUERY, userId, friendId).orElse(0) == 2) {
-            return update(FRIENDS_DELETE_QUERY, userId, friendId);
+    public void removeFriend(long userId, long friendId) {
+        if (count(USERS_EXISTS_QUERY, userId, friendId).orElse(0) == 2) {
+            update(FRIENDS_DELETE_QUERY, userId, friendId);
+            return;
         }
         throw new NotFoundException("user not found");
     }
     
     @Override
-    public Optional<User> getUserById(long userId) {
-        return findOne(FIND_BY_ID_QUERY, userId);
-    }
-    
-    private Map<String, Object> toMap(User user) {
+    protected Map<String, Object> toMap(User user) {
         Map<String, Object> values = new HashMap<>();
         values.put("name", user.getName());
         values.put("login", user.getLogin());

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
@@ -20,36 +21,43 @@ public class UserService {
 
     public User create(User user) {
         log.debug("create {}", user);
-        return storage.create(user);
+        user.setId(storage.create(user));
+        return user;
     }
 
     public User update(User user) {
         log.debug("update {}", user);
-        return storage.update(user);
-    }
-
-    public boolean delete(User user) {
-        log.debug("delete {}", user);
-        return storage.delete(user);
+        if (!storage.update(
+                user.getName(),
+                user.getLogin(),
+                user.getEmail(),
+                user.getBirthday(),
+                user.getId()
+        )) {
+            throw new NotFoundException("user not found");
+        }
+        return user;
     }
 
     public void addFriend(long userId, long friendId) {
         storage.addFriend(userId, friendId);
-        log.debug("{} addFriend {}", storage.getUserById(userId), storage.getUserById(friendId));
+        log.debug("{} addFriend {}", storage.findOneById(userId), storage.findOneById(friendId));
     }
 
     public void removeFriend(long userId, long friendId) {
         storage.removeFriend(userId, friendId);
-        log.debug("{} removeFriend {}", storage.getUserById(userId), storage.getUserById(friendId));
+        log.debug("{} removeFriend {}", storage.findOneById(userId), storage.findOneById(friendId));
     }
 
     public Collection<User> findFriends(long userId) {
-        log.debug("findFriends {}", storage.getUserById(userId));
-        return storage.findAllFriends(userId);
+        log.debug("findFriends {}", storage.findOneById(userId));
+        User user = storage.findOneById(userId)
+                .orElseThrow(() -> new NotFoundException("user not found"));
+        return storage.findAllById(user.getId());
     }
 
     public Collection<User> getMutualFriends(long userId, long friendId) {
-        log.debug("{} getMutualFriends {}", storage.getUserById(userId), storage.getUserById(friendId));
+        log.debug("{} getMutualFriends {}", storage.findOneById(userId), storage.findOneById(friendId));
         return storage.findAllMutualFriends(userId,friendId);
     }
 }

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.interfaces;
+package ru.yandex.practicum.filmorate.storage.query;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -11,11 +11,12 @@ import java.util.Map;
 import java.util.Optional;
 
 @RequiredArgsConstructor
-public class BaseStorage<T> {
+public abstract class BaseQueryExecutor<T> implements QueryExecutor<T>{
     protected final JdbcTemplate jdbc;
     protected final RowMapper<T> mapper;
     
-    protected Optional<T> findOne(String query, Object... params) {
+    @Override
+    public Optional<T> findOne(String query, Object... params) {
         try {
             T result = jdbc.queryForObject(query, mapper, params);
             return Optional.ofNullable(result);
@@ -24,22 +25,26 @@ public class BaseStorage<T> {
         }
     }
     
-    protected Collection<T> findMany(String query, Object... params) {
+    @Override
+    public Collection<T> findMany(String query, Object... params) {
         return jdbc.query(query, mapper, params);
     }
     
-    protected long simpleInsert(Map<String, Object> map, String tableName) {
+    @Override
+    public long save(Map<String, Object> map, String tableName) {
         SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(jdbc)
                 .withTableName(tableName)
                 .usingGeneratedKeyColumns("id");
         return simpleJdbcInsert.executeAndReturnKey(map).longValue();
     }
     
-    protected boolean update(String query, Object... params) {
+    @Override
+    public boolean update(String query, Object... params) {
         return jdbc.update(query, params) == 1;
     }
     
-    protected Optional<Integer> exists(String query, Object... params) {
+    @Override
+    public Optional<Integer> count(String query, Object... params) {
         try {
             Integer result = jdbc.queryForObject(query, Integer.class, params);
             return Optional.ofNullable(result);
