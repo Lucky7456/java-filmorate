@@ -20,6 +20,7 @@ public class GenreService {
     }
     
     public Genre getGenreById(int id) {
+        log.debug("getGenreById {}", id);
         return storage.findOneById(id)
                 .orElseThrow(() -> new NotFoundException("genre not found"));
     }

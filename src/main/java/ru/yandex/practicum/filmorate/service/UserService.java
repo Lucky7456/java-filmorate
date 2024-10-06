@@ -40,24 +40,24 @@ public class UserService {
     }
 
     public void addFriend(long userId, long friendId) {
+        log.debug("userId {} addFriend {}", userId, friendId);
         storage.addFriend(userId, friendId);
-        log.debug("{} addFriend {}", storage.findOneById(userId), storage.findOneById(friendId));
     }
 
     public void removeFriend(long userId, long friendId) {
+        log.debug("userId {} removeFriend {}", userId, friendId);
         storage.removeFriend(userId, friendId);
-        log.debug("{} removeFriend {}", storage.findOneById(userId), storage.findOneById(friendId));
     }
 
     public Collection<User> findFriends(long userId) {
-        log.debug("findFriends {}", storage.findOneById(userId));
+        log.debug("findFriends {}", userId);
         User user = storage.findOneById(userId)
                 .orElseThrow(() -> new NotFoundException("user not found"));
         return storage.findAllById(user.getId());
     }
 
     public Collection<User> getMutualFriends(long userId, long friendId) {
-        log.debug("{} getMutualFriends {}", storage.findOneById(userId), storage.findOneById(friendId));
+        log.debug("userId {} getMutualFriends {}", userId, friendId);
         return storage.findAllMutualFriends(userId,friendId);
     }
 }

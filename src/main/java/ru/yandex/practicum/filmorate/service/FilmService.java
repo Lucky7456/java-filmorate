@@ -88,6 +88,7 @@ public class FilmService {
     }
     
     public Film getFilmById(long id) {
+        log.debug("getFilmById {}", id);
         Film film = filmStorage.findOneById(id)
                 .orElseThrow(() -> new NotFoundException("film not found"));
         
@@ -101,6 +102,7 @@ public class FilmService {
     
     private void saveFilmGenres(long filmId, List<Genre> genres) {
         for (Genre genre : genres) {
+            log.trace("film {} save {} genre", filmId, genre.getId());
             if (genreStorage.findOneById(genre.getId()).isEmpty()) {
                 throw new SQLDataException("bad request");
             }
