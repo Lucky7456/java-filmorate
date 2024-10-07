@@ -12,7 +12,7 @@ public class RatingMpaRowMapper implements RowMapper<RatingMpa> {
     @Override
     public RatingMpa mapRow(ResultSet rs, int ignored) throws SQLException {
         return new RatingMpa(
-                rs.getInt("id"),
+                rs.getLong("id"),
                 rs.getString("rating")
         );
     }

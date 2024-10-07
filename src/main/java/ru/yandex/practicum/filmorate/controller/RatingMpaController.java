@@ -22,7 +22,7 @@ public class RatingMpaController {
     }
 
     @GetMapping("/{id}")
-    public RatingMpa getRatingMpaById(@PathVariable int id) {
+    public RatingMpa getRatingMpaById(@PathVariable long id) {
         return service.getRatingMpaById(id);
     }
 }

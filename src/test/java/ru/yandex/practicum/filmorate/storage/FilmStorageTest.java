@@ -59,7 +59,7 @@ public class FilmStorageTest {
         film.setDescription("description");
         film.setReleaseDate(LocalDate.now());
         film.setDuration(1);
-        film.setMpa(new RatingMpa(1, "G"));
+        film.setMpa(new RatingMpa(1L, "G"));
         film.setGenres(new ArrayList<>());
 
         long id = storage.create(film);
@@ -119,7 +119,7 @@ public class FilmStorageTest {
     @Test
     public void testShouldSaveFilmGenre() {
         long filmId = 1L;
-        int genreId = 1;
+        long genreId = 1L;
 
         assertThat(storage.saveFilmGenre(filmId, genreId)).isEqualTo(1);
     }

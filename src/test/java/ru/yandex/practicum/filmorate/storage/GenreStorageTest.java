@@ -28,7 +28,7 @@ public class GenreStorageTest {
 
     @Test
     public void testFindGenreById() {
-        int id = 1;
+        long id = 1L;
         Optional<Genre> genreOptional = storage.findOneById(id);
 
         assertThat(genreOptional)

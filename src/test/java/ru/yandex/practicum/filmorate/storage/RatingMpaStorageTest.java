@@ -28,7 +28,7 @@ public class RatingMpaStorageTest {
 
     @Test
     public void testFindMpaRatingById() {
-        int id = 1;
+        long id = 1L;
         Optional<RatingMpa> ratingMpaOptional = storage.findOneById(id);
 
         assertThat(ratingMpaOptional)

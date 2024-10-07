@@ -63,7 +63,7 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
     }
 
     @Override
-    public int saveFilmGenre(long filmId, int genreId) {
+    public int saveFilmGenre(long filmId, long genreId) {
         try {
             return update(INSERT_FILM_GENRES_QUERY, filmId, genreId);
         } catch (DataAccessException ignored) {
