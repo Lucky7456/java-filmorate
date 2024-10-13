@@ -1,30 +1,27 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.util;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import ru.yandex.practicum.filmorate.storage.interfaces.CrudStorage;
+import ru.yandex.practicum.filmorate.storage.util.interfaces.CrudStorage;
 
 import java.util.Map;
 
 public abstract class BaseCrudStorage<T> extends BaseCollectionStorage<T> implements CrudStorage<T> {
-    private final String table;
+    protected static final String DELETE_FROM = "DELETE FROM ";
+
     private final String update;
     private final String delete;
 
     public BaseCrudStorage(
             JdbcTemplate jdbc,
             RowMapper<T> mapper,
-            String findAll,
-            String findOneById,
-            String findAllById,
             String table,
-            String update,
-            String delete
+            String findAllById,
+            String update
     ) {
-        super(jdbc, mapper, findAll, findOneById, findAllById);
-        this.table = table;
+        super(jdbc, mapper, table, findAllById);
         this.update = update;
-        this.delete = delete;
+        this.delete = DELETE_FROM + table + WHERE_ID_EQUALS;
     }
 
     @Override

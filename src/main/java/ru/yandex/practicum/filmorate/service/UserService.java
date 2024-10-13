@@ -3,61 +3,66 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.interfaces.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
-    private final UserStorage storage;
+    private final UserStorage userStorage;
+    private final FriendsStorage friendsStorage;
 
     public List<User> findAll() {
-        return storage.findAll();
+        return userStorage.findAll();
     }
 
     public User create(User user) {
         log.debug("create {}", user);
-        user.setId(storage.create(user));
+        user.setId(userStorage.create(user));
         return user;
     }
 
     public User update(User user) {
         log.debug("update {}", user);
-        if (storage.update(
+        int updatedRows = userStorage.update(
                 user.getName(),
                 user.getLogin(),
                 user.getEmail(),
                 user.getBirthday(),
                 user.getId()
-        ) != 1) {
-            throw new NotFoundException("user not found");
+        );
+        if (updatedRows == 1) {
+            return user;
         }
-        return user;
+        throw new NoSuchElementException("user not found");
     }
 
     public void addFriend(long userId, long friendId) {
         log.debug("userId {} addFriend {}", userId, friendId);
-        storage.addFriend(userId, friendId);
+        friendsStorage.insert(getUserById(userId).getId(), getUserById(friendId).getId());
     }
 
     public void removeFriend(long userId, long friendId) {
         log.debug("userId {} removeFriend {}", userId, friendId);
-        storage.removeFriend(userId, friendId);
+        friendsStorage.delete(getUserById(userId).getId(), getUserById(friendId).getId());
     }
 
     public List<User> findFriends(long userId) {
         log.debug("findFriends {}", userId);
-        User user = storage.findOneById(userId)
-                .orElseThrow(() -> new NotFoundException("user not found"));
-        return storage.findAllBy(user.getId());
+        return userStorage.findAllBy(getUserById(userId).getId());
     }
 
     public List<User> getMutualFriends(long userId, long friendId) {
         log.debug("userId {} getMutualFriends {}", userId, friendId);
-        return storage.findAllMutualFriends(userId, friendId);
+        return userStorage.findAllMutualFriends(getUserById(userId).getId(), getUserById(friendId).getId());
+    }
+
+    private User getUserById(long id) {
+        return userStorage.findOneById(id).orElseThrow();
     }
 }

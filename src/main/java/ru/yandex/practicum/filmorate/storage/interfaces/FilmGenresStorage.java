@@ -1,7 +1,13 @@
 package ru.yandex.practicum.filmorate.storage.interfaces;
 
-public interface FilmGenresStorage {
-    int saveFilmGenre(long filmId, long genreId);
+import ru.yandex.practicum.filmorate.model.FilmGenre;
 
-    int deleteFilmGenres(long filmId);
+import java.util.List;
+
+public interface FilmGenresStorage {
+    List<FilmGenre> findAll();
+
+    int[] batchUpdate(List<Object[]> batch);
+
+    int delete(long filmId);
 }

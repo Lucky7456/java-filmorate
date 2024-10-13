@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.validator.PastDate;
 
 import java.time.LocalDate;
-import java.util.List;
+import java.util.Set;
 
 @Data
 @AllArgsConstructor
@@ -26,5 +26,5 @@ public class Film {
     @Positive
     private int duration;
     private RatingMpa mpa;
-    private List<Genre> genres;
+    private Set<Genre> genres;
 }

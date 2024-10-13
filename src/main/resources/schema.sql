@@ -23,11 +23,6 @@ CREATE TABLE IF NOT EXISTS genres (
     CONSTRAINT uq_genres UNIQUE(film_id, genre_id)
 );
 
-CREATE TABLE IF NOT EXISTS friend_request (
-    id TINYINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    status BIT NOT NULL
-);
-
 CREATE TABLE IF NOT EXISTS users (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     name VARCHAR(255),
@@ -39,7 +34,7 @@ CREATE TABLE IF NOT EXISTS users (
 CREATE TABLE IF NOT EXISTS friends (
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     friend_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-    friend_request_id TINYINT NOT NULL REFERENCES friend_request(id)
+    CONSTRAINT uq_friends UNIQUE(user_id, friend_id)
 );
 
 CREATE TABLE IF NOT EXISTS likes (
