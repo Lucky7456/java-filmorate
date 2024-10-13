@@ -8,13 +8,12 @@
 
 - для получения списка всех фильмов:
   ```sql
-  SELECT f.*, r.rating 
-  FROM films AS f 
-  JOIN rating_mpa AS r ON r.id = f.rating_id;
+  SELECT * 
+  FROM films;
   ```
 - для получения списка всех пользователей:
   ```sql
-  SELECT *
+  SELECT * 
   FROM users;
   ```
 - список 10 наиболее популярных фильмов:
@@ -31,10 +30,10 @@
   ```sql
   SELECT *
   FROM users
-  WHERE id IN (SELECT f1.friend_id
-               FROM friends AS f1
-               JOIN friends AS f2 ON f1.friend_id = f2.friend_id
-               JOIN friend_request AS fr ON fr.id = f1.friend_request_id
-               WHERE f1.user_id = @user_1 AND f2.user_id = @user_2
+  WHERE id IN (
+      SELECT f1.friend_id
+      FROM friends AS f1
+      JOIN friends AS f2 ON f1.friend_id = f2.friend_id
+      WHERE f1.user_id = @user_1 AND f2.user_id = @user_2
   );
   ```

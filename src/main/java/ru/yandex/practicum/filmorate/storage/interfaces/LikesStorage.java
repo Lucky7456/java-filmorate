@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.interfaces;
 
-public interface LikesStorage {
-    int addLike(long filmId, long userId);
+import ru.yandex.practicum.filmorate.storage.util.interfaces.InsertDeleteStorage;
 
-    int removeLike(long filmId, long userId);
+public interface LikesStorage extends InsertDeleteStorage {
 }

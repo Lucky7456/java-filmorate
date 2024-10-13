@@ -1,8 +1,8 @@
-package ru.yandex.practicum.filmorate.storage;
+package ru.yandex.practicum.filmorate.storage.util;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
-import ru.yandex.practicum.filmorate.storage.interfaces.CollectionStorage;
+import ru.yandex.practicum.filmorate.storage.util.interfaces.CollectionStorage;
 
 import java.util.List;
 
@@ -12,11 +12,10 @@ public abstract class BaseCollectionStorage<T> extends BaseEntityStorage<T> impl
     public BaseCollectionStorage(
             JdbcTemplate jdbc,
             RowMapper<T> mapper,
-            String findAll,
-            String findOneById,
+            String table,
             String findAllById
     ) {
-        super(jdbc, mapper, findAll, findOneById);
+        super(jdbc, mapper, table);
         this.findAllById = findAllById;
     }
 

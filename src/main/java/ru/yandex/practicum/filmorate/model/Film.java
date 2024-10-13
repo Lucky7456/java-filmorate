@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.validator.PastDate;
 
 import java.time.LocalDate;
-import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -25,6 +24,5 @@ public class Film {
     private LocalDate releaseDate;
     @Positive
     private int duration;
-    private RatingMpa mpa;
-    private List<Genre> genres;
+    private Long mpa;
 }
