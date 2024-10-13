@@ -1,4 +1,4 @@
-package ru.yandex.practicum.filmorate.storage.interfaces;
+package ru.yandex.practicum.filmorate.storage.util.interfaces;
 
 public interface CrudStorage<T> {
     long create(T entity);

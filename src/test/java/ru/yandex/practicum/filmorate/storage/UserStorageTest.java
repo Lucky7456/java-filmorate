@@ -1,20 +1,17 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.RequiredArgsConstructor;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
-import ru.yandex.practicum.filmorate.storage.mappers.UserRowMapper;
+import ru.yandex.practicum.filmorate.storage.mapper.UserRowMapper;
 
 import java.time.LocalDate;
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @JdbcTest
 @Import({UserDbStorage.class, UserRowMapper.class})
@@ -25,18 +22,17 @@ public class UserStorageTest {
 
     @Test
     public void testFindAllUsers() {
-        assertThat(storage.findAll()).hasSize(5);
+        Assertions.assertThat(storage.findAll()).hasSize(5);
     }
 
     @Test
     public void testFindUserById() {
         long id = 1L;
-        Optional<User> userOptional = storage.findOneById(id);
 
-        assertThat(userOptional)
+        Assertions.assertThat(storage.findOneById(id))
                 .isPresent()
                 .hasValueSatisfying(
-                        user -> assertThat(user)
+                        user -> Assertions.assertThat(user)
                                 .hasFieldOrPropertyWithValue("id", id)
                 );
     }
@@ -45,7 +41,7 @@ public class UserStorageTest {
     public void testFindAllFriendsOfUser() {
         long id = 1L;
 
-        assertThat(storage.findAllBy(id))
+        Assertions.assertThat(storage.findAllBy(id))
                 .hasOnlyElementsOfType(User.class)
                 .hasSize(4);
     }
@@ -62,7 +58,7 @@ public class UserStorageTest {
 
         user.setId(id);
 
-        assertThat(storage.findOneById(id))
+        Assertions.assertThat(storage.findOneById(id))
                 .isPresent()
                 .hasValue(user);
     }
@@ -71,8 +67,7 @@ public class UserStorageTest {
     public void testShouldUpdateUserSuccessfully() {
         long id = 1L;
 
-        User user = storage.findOneById(id)
-                .orElseThrow(() -> new NotFoundException("user not found"));
+        User user = storage.findOneById(id).orElseThrow();
 
         user.setLogin("otherLogin");
 
@@ -84,7 +79,7 @@ public class UserStorageTest {
                 user.getId()
         );
 
-        assertThat(storage.findOneById(id)).hasValue(user);
+        Assertions.assertThat(storage.findOneById(id)).hasValue(user);
     }
 
     @Test
@@ -92,7 +87,7 @@ public class UserStorageTest {
         long id = 1L;
         storage.delete(id);
 
-        assertThat(storage.findOneById(id)).isEmpty();
+        Assertions.assertThat(storage.findOneById(id)).isEmpty();
     }
 
     @Test
@@ -100,24 +95,8 @@ public class UserStorageTest {
         long userId = 1L;
         long otherId = 2L;
 
-        assertThat(storage.findAllMutualFriends(userId, otherId))
+        Assertions.assertThat(storage.findAllMutualFriends(userId, otherId))
                 .hasOnlyElementsOfType(User.class)
                 .hasSize(3);
-    }
-
-    @Test
-    public void testShouldAddFriendToUser() {
-        long userId = 4L;
-        long friendId = 1L;
-
-        assertThat(storage.addFriend(userId, friendId)).isEqualTo(1);
-    }
-
-    @Test
-    public void testShouldRemoveFriendFromUser() {
-        long userId = 1L;
-        long friendId = 4L;
-
-        assertThat(storage.removeFriend(userId, friendId)).isEqualTo(1);
     }
 }

@@ -1,18 +1,14 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.RequiredArgsConstructor;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import ru.yandex.practicum.filmorate.model.RatingMpa;
 import ru.yandex.practicum.filmorate.storage.interfaces.RatingMpaStorage;
-import ru.yandex.practicum.filmorate.storage.mappers.RatingMpaRowMapper;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import ru.yandex.practicum.filmorate.storage.mapper.RatingMpaRowMapper;
 
 @JdbcTest
 @Import({RatingMpaDbStorage.class, RatingMpaRowMapper.class})
@@ -23,18 +19,17 @@ public class RatingMpaStorageTest {
 
     @Test
     public void testFindAllMpaRatings() {
-        assertThat(storage.findAll()).hasSize(5);
+        Assertions.assertThat(storage.findAll()).hasSize(5);
     }
 
     @Test
     public void testFindMpaRatingById() {
         long id = 1L;
-        Optional<RatingMpa> ratingMpaOptional = storage.findOneById(id);
 
-        assertThat(ratingMpaOptional)
+        Assertions.assertThat(storage.findOneById(id))
                 .isPresent()
                 .hasValueSatisfying(
-                        ratingMpa -> assertThat(ratingMpa)
+                        ratingMpa -> Assertions.assertThat(ratingMpa)
                                 .hasFieldOrPropertyWithValue("id", id)
                 );
     }

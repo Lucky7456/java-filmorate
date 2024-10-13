@@ -5,13 +5,11 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
+import ru.yandex.practicum.filmorate.storage.util.BaseCollectionStorage;
 
 @Repository
 public class GenreDbStorage extends BaseCollectionStorage<Genre> implements GenreStorage {
-    private static final String FIND_ALL_QUERY =
-            "SELECT * FROM genre";
-    private static final String FIND_BY_ID_QUERY =
-            "SELECT * FROM genre WHERE id = ?";
+    private static final String TABLE_NAME = "genre";
     private static final String FIND_FILM_GENRES_QUERY =
             "SELECT g.* " +
             "FROM genre AS g " +
@@ -19,6 +17,6 @@ public class GenreDbStorage extends BaseCollectionStorage<Genre> implements Genr
             "WHERE gs.film_id = ?";
 
     public GenreDbStorage(JdbcTemplate jdbc, RowMapper<Genre> mapper) {
-        super(jdbc, mapper, FIND_ALL_QUERY, FIND_BY_ID_QUERY, FIND_FILM_GENRES_QUERY);
+        super(jdbc, mapper, TABLE_NAME, FIND_FILM_GENRES_QUERY);
     }
 }

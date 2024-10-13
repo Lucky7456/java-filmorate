@@ -3,17 +3,17 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
-import ru.yandex.practicum.filmorate.exception.SQLDataException;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.dto.GenreDto;
+import ru.yandex.practicum.filmorate.dto.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.model.FilmGenre;
 import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
-import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.interfaces.RatingMpaStorage;
+import ru.yandex.practicum.filmorate.model.RatingMpa;
+import ru.yandex.practicum.filmorate.storage.interfaces.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -21,91 +21,93 @@ import java.util.Objects;
 public class FilmService {
     private final FilmStorage filmStorage;
     private final GenreStorage genreStorage;
+    private final LikesStorage likesStorage;
+    private final FilmGenresStorage filmGenresStorage;
     private final RatingMpaStorage ratingMpaStorage;
 
-    public List<Film> findAll() {
-        return filmStorage.findAll();
+    public List<FilmDto.Response.Public> findAll() {
+        return prepare(filmStorage.findAll());
     }
 
-    public Film create(Film film) {
-        log.debug("create {}", film);
+    public List<FilmDto.Response.Public> getMostPopularFilms(int count) {
+        log.debug("popular films count {}", count);
+        return prepare(filmStorage.findAllBy(count));
+    }
+
+    public FilmDto.Response.Public create(FilmDto.Request.Create request) {
+        log.debug("create {}", request);
+        Film film = FilmMapper.mapToFilm(request);
         film.setId(filmStorage.create(film));
-
-        if (Objects.nonNull(film.getGenres())) {
-            saveFilmGenres(film.getId(), film.getGenres());
-            film.setGenres(genreStorage.findAllBy(film.getId()));
-        }
-
-        film.setMpa(
-                ratingMpaStorage.findOneById(film.getMpa().getId())
-                        .orElseThrow(() -> new SQLDataException("rating not found"))
-        );
-
-        return film;
+        return process(film, request.getGenres());
     }
 
-    public Film update(Film film) {
-        log.debug("update {}", film);
-        if (filmStorage.update(
-                film.getName(),
-                film.getDescription(),
-                film.getReleaseDate(),
-                film.getDuration(),
-                film.getMpa().getId(),
-                film.getId()
-        ) != 1) {
-            throw new NotFoundException("film not found");
-        }
-
-        if (Objects.nonNull(film.getGenres())) {
-            filmStorage.deleteFilmGenres(film.getId());
-            saveFilmGenres(film.getId(), film.getGenres());
-            film.setGenres(genreStorage.findAllBy(film.getId()));
-        }
-
-        film.setMpa(
-                ratingMpaStorage.findOneById(film.getMpa().getId())
-                        .orElseThrow(() -> new NotFoundException("rating not found"))
+    public FilmDto.Response.Public update(FilmDto.Request.Update request) {
+        log.debug("update {}", request);
+        int updatedRows = filmStorage.update(
+                request.getName(),
+                request.getDescription(),
+                request.getReleaseDate(),
+                request.getDuration(),
+                request.getMpa().id(),
+                request.getId()
         );
-
-        return film;
+        if (updatedRows == 1) {
+            filmGenresStorage.delete(request.getId());
+            return process(FilmMapper.mapToFilm(request), request.getGenres());
+        }
+        throw new NoSuchElementException("film not found");
     }
 
     public void addLike(long filmId, long userId) {
-        filmStorage.addLike(filmId, userId);
         log.debug("{} addLike {}", filmId, userId);
+        likesStorage.insert(filmId, userId);
     }
 
     public void removeLike(long filmId, long userId) {
-        filmStorage.removeLike(filmId, userId);
         log.debug("{} removeLike {}", filmId, userId);
+        likesStorage.delete(filmId, userId);
     }
 
-    public List<Film> getMostPopularFilms(int count) {
-        log.debug("popular films count {}", count);
-        return filmStorage.findAllBy(count);
-    }
-
-    public Film getFilmById(long id) {
+    public FilmDto.Response.Public getFilmById(long id) {
         log.debug("getFilmById {}", id);
-        Film film = filmStorage.findOneById(id)
-                .orElseThrow(() -> new NotFoundException("film not found"));
-
-        film.setMpa(ratingMpaStorage.findOneById(film.getMpa().getId())
-                .orElseThrow(() -> new NotFoundException("rating not found")));
-
-        film.setGenres(new ArrayList<>(genreStorage.findAllBy(id)));
-
-        return film;
+        return prepare(filmStorage.findOneById(id).orElseThrow());
     }
 
-    private void saveFilmGenres(long filmId, List<Genre> genres) {
-        for (Genre genre : genres) {
-            log.trace("film {} save {} genre", filmId, genre.getId());
-            if (genreStorage.findOneById(genre.getId()).isEmpty()) {
-                throw new SQLDataException("bad request");
-            }
-            filmStorage.saveFilmGenre(filmId, genre.getId());
+    private FilmDto.Response.Public process(Film film, Set<GenreDto> requestGenres) {
+        if (Objects.nonNull(requestGenres)) {
+            filmGenresStorage.batchUpdate(requestGenres.stream()
+                    .map(genre -> new Object[]{film.getId(), genre.id()})
+                    .toList());
         }
+        return prepare(film);
+    }
+
+    private FilmDto.Response.Public prepare(Film film) {
+        RatingMpa rating = ratingMpaStorage.findOneById(film.getMpa()).orElseThrow();
+        Set<Genre> genres = new LinkedHashSet<>(genreStorage.findAllBy(film.getId()));
+        return FilmMapper.mapToFilmDto(film, rating, genres);
+    }
+
+    private List<FilmDto.Response.Public> prepare(List<Film> films) {
+        if (films.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        List<RatingMpa> ratings = ratingMpaStorage.findAll();
+        List<FilmGenre> filmGenres = filmGenresStorage.findAll();
+        List<Genre> genres = genreStorage.findAll();
+
+        return films.stream()
+                .map(film -> FilmMapper.mapToFilmDto(film,
+                        ratings.stream()
+                                .filter(rating -> rating.id().equals(film.getMpa()))
+                                .findAny().orElseThrow(),
+                        filmGenres.stream()
+                                .filter(filmGenre -> filmGenre.filmId().equals(film.getId()))
+                                .map(filmGenre -> genres.stream()
+                                        .filter(genre -> genre.id().equals(filmGenre.genreId()))
+                                        .findAny().orElseThrow())
+                                .collect(Collectors.toSet())))
+                .toList();
     }
 }

@@ -1,6 +1,7 @@
 package ru.yandex.practicum.filmorate.storage;
 
 import lombok.RequiredArgsConstructor;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -8,11 +9,7 @@ import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.storage.interfaces.GenreStorage;
-import ru.yandex.practicum.filmorate.storage.mappers.GenreRowMapper;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
+import ru.yandex.practicum.filmorate.storage.mapper.GenreRowMapper;
 
 @JdbcTest
 @Import({GenreDbStorage.class, GenreRowMapper.class})
@@ -23,18 +20,17 @@ public class GenreStorageTest {
 
     @Test
     public void testFindAllGenres() {
-        assertThat(storage.findAll()).hasSize(6);
+        Assertions.assertThat(storage.findAll()).hasSize(6);
     }
 
     @Test
     public void testFindGenreById() {
         long id = 1L;
-        Optional<Genre> genreOptional = storage.findOneById(id);
 
-        assertThat(genreOptional)
+        Assertions.assertThat(storage.findOneById(id))
                 .isPresent()
                 .hasValueSatisfying(
-                        genre -> assertThat(genre)
+                        genre -> Assertions.assertThat(genre)
                                 .hasFieldOrPropertyWithValue("id", id)
                 );
     }
@@ -43,7 +39,7 @@ public class GenreStorageTest {
     public void testFindAllGenresOfFilm() {
         long id = 4L;
 
-        assertThat(storage.findAllBy(id))
+        Assertions.assertThat(storage.findAllBy(id))
                 .hasOnlyElementsOfType(Genre.class)
                 .hasSize(3);
     }
