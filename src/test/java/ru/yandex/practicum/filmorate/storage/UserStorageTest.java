@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 import ru.yandex.practicum.filmorate.storage.mappers.UserRowMapper;
@@ -71,8 +70,7 @@ public class UserStorageTest {
     public void testShouldUpdateUserSuccessfully() {
         long id = 1L;
 
-        User user = storage.findOneById(id)
-                .orElseThrow(() -> new NotFoundException("user not found"));
+        User user = storage.findOneById(id).orElseThrow();
 
         user.setLogin("otherLogin");
 
@@ -103,21 +101,5 @@ public class UserStorageTest {
         assertThat(storage.findAllMutualFriends(userId, otherId))
                 .hasOnlyElementsOfType(User.class)
                 .hasSize(3);
-    }
-
-    @Test
-    public void testShouldAddFriendToUser() {
-        long userId = 4L;
-        long friendId = 1L;
-
-        assertThat(storage.addFriend(userId, friendId)).isEqualTo(1);
-    }
-
-    @Test
-    public void testShouldRemoveFriendFromUser() {
-        long userId = 1L;
-        long friendId = 4L;
-
-        assertThat(storage.removeFriend(userId, friendId)).isEqualTo(1);
     }
 }

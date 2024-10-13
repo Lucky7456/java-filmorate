@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.storage.interfaces;
 
-public interface FilmGenresStorage {
-    int saveFilmGenre(long filmId, long genreId);
+import ru.yandex.practicum.filmorate.storage.util.interfaces.InsertDeleteStorage;
 
-    int deleteFilmGenres(long filmId);
+public interface FilmGenresStorage extends InsertDeleteStorage {
 }

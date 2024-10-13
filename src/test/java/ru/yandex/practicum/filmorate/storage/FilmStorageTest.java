@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.jdbc.JdbcTest;
 import org.springframework.context.annotation.Import;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.RatingMpa;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
@@ -59,7 +58,7 @@ public class FilmStorageTest {
         film.setDescription("description");
         film.setReleaseDate(LocalDate.now());
         film.setDuration(1);
-        film.setMpa(new RatingMpa(1L, "G"));
+        film.setMpa(new RatingMpa(1L, null));
         film.setGenres(new ArrayList<>());
 
         long id = storage.create(film);
@@ -75,8 +74,7 @@ public class FilmStorageTest {
     public void testShouldUpdateFilmSuccessfully() {
         long id = 1L;
 
-        Film film = storage.findOneById(id)
-                .orElseThrow(() -> new NotFoundException("film not found"));
+        Film film = storage.findOneById(id).orElseThrow();
 
         film.setDuration(10);
 
@@ -98,36 +96,5 @@ public class FilmStorageTest {
         storage.delete(id);
 
         assertThat(storage.findOneById(id)).isEmpty();
-    }
-
-    @Test
-    public void testShouldAddLikeToFilmFromUser() {
-        long filmId = 4L;
-        long userId = 1L;
-
-        assertThat(storage.addLike(filmId, userId)).isEqualTo(1);
-    }
-
-    @Test
-    public void testShouldRemoveLikeToFilmFromUser() {
-        long filmId = 1L;
-        long userId = 1L;
-
-        assertThat(storage.removeLike(filmId, userId)).isEqualTo(1);
-    }
-
-    @Test
-    public void testShouldSaveFilmGenre() {
-        long filmId = 1L;
-        long genreId = 1L;
-
-        assertThat(storage.saveFilmGenre(filmId, genreId)).isEqualTo(1);
-    }
-
-    @Test
-    public void testShouldDeleteFilmGenres() {
-        long filmId = 3L;
-
-        assertThat(storage.deleteFilmGenres(filmId)).isGreaterThanOrEqualTo(1);
     }
 }

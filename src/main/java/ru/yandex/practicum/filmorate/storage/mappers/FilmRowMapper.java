@@ -21,7 +21,7 @@ public class FilmRowMapper implements RowMapper<Film> {
                 rs.getInt("duration"),
                 new RatingMpa(
                         rs.getLong("rating_id"),
-                        rs.getString("rating")
+                        null
                 ),
                 new ArrayList<>()
         );

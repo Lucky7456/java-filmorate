@@ -27,10 +27,6 @@ VALUES (1, 2),
        (4, 2), (4, 6), (4, 3),
        (5, 3), (5, 5), (5, 2);
 
-INSERT INTO friend_request (status)
-VALUES (0),
-       (1);
-
 INSERT INTO users (name, login, email, birthday)
 VALUES ('', 'userlogin', 'mail@mail.com', '1995-05-05'),
        ('', 'testlogin', 'test@mail.ru', '2000-01-01'),
@@ -38,11 +34,12 @@ VALUES ('', 'userlogin', 'mail@mail.com', '1995-05-05'),
        ('no name', 'someuser', 'some@mail.com', '1999-10-01'),
        ('simple name', 'simple_login', 'simple@mail.ru', '2010-10-10');
 
-INSERT INTO friends (user_id, friend_id, friend_request_id)
-VALUES (1, 2, 2), (1, 3, 1), (1, 4, 2), (1, 5, 1),
-       (2, 3, 2), (2, 4, 2), (2, 5, 2),
-       (3, 4, 2), (3, 5, 1),
-       (4, 5, 2);
+INSERT INTO friends (user_id, friend_id)
+VALUES (1, 2), (1, 3), (1, 4), (1, 5),
+       (2, 1), (2, 3), (2, 4), (2, 5),
+       (3, 2), (3, 4), (3, 5),
+       (4, 1), (4, 2), (4, 3), (4, 5),
+       (5, 2), (5, 4);
 
 INSERT INTO likes (film_id, user_id)
 VALUES (1, 1), (1, 2), (1, 3), (1, 4), (1, 5),

@@ -8,10 +8,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.interfaces.BaseUserTest;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
+
+import java.util.NoSuchElementException;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.assertInstanceOf;
@@ -73,13 +74,13 @@ public class UserControllerTest extends BaseUserTest {
 
     @Test
     void shouldReturnNotFoundOnPutUserWithUnmappedId() throws Exception {
-        when(userService.update(any(User.class))).thenThrow(NotFoundException.class);
+        when(userService.update(any(User.class))).thenThrow(NoSuchElementException.class);
         this.mockMvc.perform(put(URL)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(user))
                 )
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertInstanceOf(NotFoundException.class, result.getResolvedException()));
+                .andExpect(result -> assertInstanceOf(NoSuchElementException.class, result.getResolvedException()));
     }
 
     @Test
