@@ -48,4 +48,9 @@ public class FilmController {
     public List<FilmDto.Response.Public> popular(@RequestParam(defaultValue = "10") int count) {
         return service.getMostPopularFilms(count);
     }
+
+    @GetMapping("/search")
+    public List<FilmDto.Response.Public> search(@RequestParam String query, @RequestParam List<String> by) {
+        return service.search(query, by);
+    }
 }

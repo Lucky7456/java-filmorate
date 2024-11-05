@@ -34,6 +34,11 @@ public class FilmService {
         return prepare(filmStorage.findAllBy(count));
     }
 
+    public List<FilmDto.Response.Public> search(String query, List<String> by) {
+        log.debug("search films {} by {}", query, by);
+        return prepare(filmStorage.search(query, by));
+    }
+
     public FilmDto.Response.Public create(FilmDto.Request.Create request) {
         log.debug("create {}", request);
         Film film = FilmMapper.mapToFilm(request);
