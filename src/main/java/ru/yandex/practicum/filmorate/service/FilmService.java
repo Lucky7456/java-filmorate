@@ -29,9 +29,9 @@ public class FilmService {
         return prepare(filmStorage.findAll());
     }
 
-    public List<FilmDto.Response.Public> getMostPopularFilms(int count) {
-        log.debug("popular films count {}", count);
-        return prepare(filmStorage.findAllBy(count));
+    public List<FilmDto.Response.Public> getMostPopularFilms(int count, int genreId, int year) {
+        log.debug("popular films count {} genreId {} year {}", count, genreId, year);
+        return prepare(filmStorage.findAllBy(count, genreId, year));
     }
 
     public FilmDto.Response.Public create(FilmDto.Request.Create request) {
