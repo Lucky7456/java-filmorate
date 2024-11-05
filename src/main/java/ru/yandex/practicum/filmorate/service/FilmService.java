@@ -58,6 +58,11 @@ public class FilmService {
         throw new NoSuchElementException("film not found");
     }
 
+    public void delete(long id) {
+        log.debug("delete film by id {}", id);
+        filmStorage.delete(id);
+    }
+
     public void addLike(long filmId, long userId) {
         log.debug("{} addLike {}", filmId, userId);
         likesStorage.insert(filmId, userId);

@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -19,6 +20,11 @@ public class UserController {
         return service.findAll();
     }
 
+    @GetMapping("/{id}")
+    public User getUser(@PathVariable long id) {
+        return service.getUserById(id);
+    }
+
     @PostMapping
     public User create(@Valid @RequestBody User user) {
         return service.create(user);
@@ -27,6 +33,11 @@ public class UserController {
     @PutMapping
     public User update(@Valid @RequestBody User user) {
         return service.update(user);
+    }
+
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable long id) {
+        service.delete(id);
     }
 
     @PutMapping("/{id}/friends/{friendId}")
