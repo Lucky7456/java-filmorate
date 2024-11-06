@@ -7,6 +7,7 @@ import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.util.BaseCrudStorage;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,6 +19,7 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
             "SELECT f.* " +
             "FROM films AS f " +
             "LEFT JOIN likes AS l ON l.film_id = f.id " +
+            "%s" +
             "GROUP BY f.id " +
             "ORDER BY COUNT(l.user_id) DESC " +
             "LIMIT ?";
@@ -92,6 +94,26 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
     @Override
     public List<Film> findCommon(long userId, long friendId) {
         return findMany(FIND_COMMON_QUERY, userId, friendId);
+    }
+
+    @Override
+    public List<Film> findAllBy(Object... params) {
+        StringBuilder resultQuery = new StringBuilder();
+        List<Object> resultParams = new ArrayList<>();
+        int genreId = (int) params[1];
+        if (genreId > 0) {
+            resultQuery.append("JOIN genres AS g ON g.film_id = f.id AND g.genre_id = ? ");
+            resultParams.add(genreId);
+        }
+        int year = (int) params[2];
+        if (year > 0) {
+            resultQuery.append("WHERE EXTRACT(YEAR FROM f.release_date) = ? ");
+            resultParams.add(year);
+        }
+        int count = (int) params[0];
+        resultParams.add(count);
+
+        return findMany(String.format(FIND_MOST_POPULAR_QUERY, resultQuery), resultParams.toArray());
     }
 
     @Override

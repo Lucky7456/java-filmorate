@@ -34,10 +34,9 @@ public class FilmService {
         log.debug("films with director {} sorted by {}", id, sortBy);
         return prepare(filmStorage.findSorted(directorStorage.findOneById(id).orElseThrow().id(), sortBy));
     }
-
-    public List<FilmDto.Response.Public> getMostPopularFilms(int count) {
-        log.debug("popular films count {}", count);
-        return prepare(filmStorage.findAllBy(count));
+    public List<FilmDto.Response.Public> getMostPopularFilms(int count, int genreId, int year) {
+        log.debug("popular films count {} genreId {} year {}", count, genreId, year);
+        return prepare(filmStorage.findAllBy(count, genreId, year));
     }
 
     public List<FilmDto.Response.Public> getCommonFilms(long userId, long friendId) {

@@ -20,7 +20,7 @@ public abstract class BaseCollectionStorage<T> extends BaseEntityStorage<T> impl
     }
 
     @Override
-    public List<T> findAllBy(long id) {
-        return findMany(findAllById, id);
+    public List<T> findAllBy(Object... params) {
+        return findMany(findAllById, params);
     }
 }
