@@ -3,7 +3,10 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.FriendsStorage;
 import ru.yandex.practicum.filmorate.storage.interfaces.UserStorage;
 
@@ -16,9 +19,17 @@ import java.util.NoSuchElementException;
 public class UserService {
     private final UserStorage userStorage;
     private final FriendsStorage friendsStorage;
+    private final FilmStorage filmStorage;
+    private final FilmService filmService;
 
     public List<User> findAll() {
         return userStorage.findAll();
+    }
+
+    public List<FilmDto.Response.Public> recommendations(long id) {
+        List<Film> recommendations = filmStorage.findRecommendations(getUserById(id).getId());
+        recommendations.removeAll(filmStorage.findLiked(id));
+        return filmService.prepare(recommendations);
     }
 
     public User create(User user) {
