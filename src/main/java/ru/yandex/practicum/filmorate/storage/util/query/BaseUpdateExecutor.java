@@ -11,4 +11,8 @@ public abstract class BaseUpdateExecutor implements UpdateExecutor {
     public int update(String query, Object... params) {
         return jdbc.update(query, params);
     }
+    @Override
+    public Integer count(String query, Object... params) {
+        return jdbc.queryForObject(query, Integer.class, params);
+    }
 }
