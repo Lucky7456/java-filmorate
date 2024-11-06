@@ -53,6 +53,11 @@ public class UserService {
         throw new NoSuchElementException("user not found");
     }
 
+    public void delete(long id) {
+        log.debug("delete user by id {}", id);
+        userStorage.delete(id);
+    }
+
     public void addFriend(long userId, long friendId) {
         log.debug("userId {} addFriend {}", userId, friendId);
         friendsStorage.insert(getUserById(userId).getId(), getUserById(friendId).getId());
@@ -73,7 +78,8 @@ public class UserService {
         return userStorage.findAllMutualFriends(getUserById(userId).getId(), getUserById(friendId).getId());
     }
 
-    private User getUserById(long id) {
+    public User getUserById(long id) {
+        log.debug("getUserById {}", id);
         return userStorage.findOneById(id).orElseThrow();
     }
 }
