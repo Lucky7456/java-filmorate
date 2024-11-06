@@ -8,8 +8,11 @@ import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.dto.GenreDto;
 import ru.yandex.practicum.filmorate.dto.mapper.FilmMapper;
 import ru.yandex.practicum.filmorate.model.*;
+import ru.yandex.practicum.filmorate.model.enums.EventType;
+import ru.yandex.practicum.filmorate.model.enums.Operation;
 import ru.yandex.practicum.filmorate.storage.interfaces.*;
 
+import java.time.Instant;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -25,6 +28,7 @@ public class FilmService {
     private final FilmGenresStorage filmGenresStorage;
     private final RatingMpaStorage ratingMpaStorage;
     private final UserStorage userStorage;
+    private final FeedStorage feedStorage;
 
     public List<FilmDto.Response.Public> findAll() {
         return prepare(filmStorage.findAll());
@@ -81,12 +85,14 @@ public class FilmService {
 
     public void addLike(long filmId, long userId) {
         log.debug("{} addLike {}", filmId, userId);
-        likesStorage.insert(filmId, userId);
+        likesStorage.insert(filmId, getUserById(userId).getId());
+        feedStorage.create(new Feed(null, userId, EventType.LIKE, Operation.ADD, filmId, Instant.now().toEpochMilli()));
     }
 
     public void removeLike(long filmId, long userId) {
         log.debug("{} removeLike {}", filmId, userId);
-        likesStorage.delete(filmId, userId);
+        likesStorage.delete(filmId, getUserById(userId).getId());
+        feedStorage.create(new Feed(null, userId, EventType.LIKE, Operation.REMOVE, filmId, Instant.now().toEpochMilli()));
     }
 
     public FilmDto.Response.Public getFilmById(long id) {

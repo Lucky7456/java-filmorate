@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.service.UserService;
 
@@ -23,6 +24,11 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUser(@PathVariable long id) {
         return service.getUserById(id);
+    }
+
+    @GetMapping("/{id}/feed")
+    public List<Feed> feed(@PathVariable long id) {
+        return service.getFeed(id);
     }
 
     @PostMapping
