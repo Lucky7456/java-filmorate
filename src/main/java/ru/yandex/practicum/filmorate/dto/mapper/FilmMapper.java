@@ -3,6 +3,7 @@ package ru.yandex.practicum.filmorate.dto.mapper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.RatingMpa;
@@ -32,7 +33,7 @@ public final class FilmMapper {
         return film;
     }
 
-    public static FilmDto.Response.Public mapToFilmDto(Film film, RatingMpa ratingDto, Set<Genre> genresRequest) {
+    public static FilmDto.Response.Public mapToFilmDto(Film film, RatingMpa ratingDto, Set<Genre> genresRequest, Set<Director> directorsRequest) {
         return new FilmDto.Response.Public(
                 film.getId(),
                 film.getName(),
@@ -40,7 +41,8 @@ public final class FilmMapper {
                 film.getReleaseDate(),
                 film.getDuration(),
                 ratingDto,
-                genresRequest
+                genresRequest,
+                directorsRequest
         );
     }
 
@@ -51,6 +53,7 @@ public final class FilmMapper {
                 film.getDescription(),
                 film.getReleaseDate(),
                 film.getDuration(),
+                null,
                 null,
                 null
         );
