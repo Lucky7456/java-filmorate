@@ -9,6 +9,7 @@ import java.util.List;
 public interface FilmStorage extends
         CollectionStorage<Film>,
         CrudStorage<Film> {
+    List<Film> search(String query, List<String> by);
     List<Film> findSorted(long id, String sortBy);
     List<Film> findRecommendations(long id);
     List<Film> findLiked(long id);

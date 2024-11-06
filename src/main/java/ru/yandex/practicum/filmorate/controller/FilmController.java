@@ -61,6 +61,11 @@ public class FilmController {
         return service.findSorted(directorId, sortBy);
     }
 
+    @GetMapping("/search")
+    public List<FilmDto.Response.Public> search(@RequestParam String query, @RequestParam List<String> by) {
+        return service.search(query, by);
+    }
+
     @GetMapping("/common")
     public List<FilmDto.Response.Public> common(@RequestParam long userId, @RequestParam long friendId) {
         return service.getCommonFilms(userId, friendId);
