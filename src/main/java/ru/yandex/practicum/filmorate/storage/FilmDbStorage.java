@@ -21,6 +21,23 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
             "GROUP BY f.id " +
             "ORDER BY COUNT(l.user_id) DESC " +
             "LIMIT ?";
+    private static final String FIND_RECOMMENDATIONS_QUERY =
+            "SELECT * FROM films " +
+            "WHERE id IN (SELECT film_id " +
+            "FROM likes " +
+            "WHERE user_id = (SELECT USER_ID " +
+            "FROM likes " +
+            "WHERE user_id <> ? AND film_id IN (SELECT film_id " +
+            "FROM likes " +
+            "WHERE user_id = ?) " +
+            "GROUP BY user_id " +
+            "ORDER BY COUNT(film_id) DESC " +
+            "LIMIT 1))";
+    private static final String FIND_LIKED_QUERY =
+            "SELECT * FROM films " +
+            "WHERE id IN (SELECT film_id " +
+            "FROM likes " +
+            "WHERE user_id = ?)";
     private static final String UPDATE_QUERY =
             "UPDATE films " +
             "SET name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? " +
@@ -38,6 +55,16 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
 
     public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper, TABLE_NAME, FIND_MOST_POPULAR_QUERY, UPDATE_QUERY);
+    }
+
+    @Override
+    public List<Film> findRecommendations(long id) {
+        return findMany(FIND_RECOMMENDATIONS_QUERY, id, id);
+    }
+
+    @Override
+    public List<Film> findLiked(long id) {
+        return findMany(FIND_LIKED_QUERY, id);
     }
 
     @Override

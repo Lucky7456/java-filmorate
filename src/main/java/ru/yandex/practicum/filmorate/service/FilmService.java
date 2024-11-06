@@ -91,7 +91,7 @@ public class FilmService {
         return FilmMapper.mapToFilmDto(film, rating, genres);
     }
 
-    private List<FilmDto.Response.Public> prepare(List<Film> films) {
+    List<FilmDto.Response.Public> prepare(List<Film> films) {
         if (films.isEmpty()) {
             return Collections.emptyList();
         }
