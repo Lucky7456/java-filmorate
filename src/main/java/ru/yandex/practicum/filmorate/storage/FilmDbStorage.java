@@ -8,6 +8,7 @@ import ru.yandex.practicum.filmorate.storage.interfaces.FilmStorage;
 import ru.yandex.practicum.filmorate.storage.util.BaseCrudStorage;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Repository
@@ -20,6 +21,13 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
             "GROUP BY f.id " +
             "ORDER BY COUNT(l.user_id) DESC " +
             "LIMIT ?";
+    private static final String FIND_BY_DIRECTORS_QUERY =
+            "SELECT f.* " +
+            "FROM films AS f " +
+            "%s" +
+            "WHERE f.id IN (SELECT film_id FROM directors WHERE director_id = ?) " +
+            "GROUP BY f.id " +
+            "ORDER BY %s";
     private static final String UPDATE_QUERY =
             "UPDATE films " +
             "SET name = ?, description = ?, release_date = ?, duration = ?, rating_id = ? " +
@@ -27,6 +35,21 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
 
     public FilmDbStorage(JdbcTemplate jdbc, RowMapper<Film> mapper) {
         super(jdbc, mapper, TABLE_NAME, FIND_MOST_POPULAR_QUERY, UPDATE_QUERY);
+    }
+
+    @Override
+    public List<Film> findSorted(long id, String sortBy) {
+        StringBuilder resultQuery = new StringBuilder();
+        String orderBy = "";
+        if (sortBy.equals("year")) {
+            orderBy = "EXTRACT(YEAR FROM release_date) ASC";
+        }
+        if (sortBy.equals("likes")) {
+            resultQuery.append("LEFT JOIN likes AS l ON l.film_id = f.id ");
+            orderBy = "COUNT(l.user_id) DESC";
+        }
+
+        return findMany(String.format(FIND_BY_DIRECTORS_QUERY, resultQuery, orderBy), id);
     }
 
     @Override

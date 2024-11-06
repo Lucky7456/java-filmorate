@@ -4,6 +4,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Value;
+import ru.yandex.practicum.filmorate.model.Director;
 import ru.yandex.practicum.filmorate.model.Genre;
 import ru.yandex.practicum.filmorate.model.RatingMpa;
 import ru.yandex.practicum.filmorate.validator.PastDate;
@@ -21,18 +22,21 @@ public enum FilmDto {;
     private interface MpaResponse { RatingMpa getMpa(); }
     private interface GenresRequest { Set<GenreDto> getGenres(); }
     private interface GenresResponse { Set<Genre> getGenres(); }
+    private interface DirectorsRequest { Set<DirectorDto> getDirectors(); }
+    private interface DirectorsResponse { Set<Director> getDirectors(); }
 
     public enum Request {;
-        @Value public static class Create implements Name, Description, ReleaseDate, Duration, MpaRequest, GenresRequest {
+        @Value public static class Create implements Name, Description, ReleaseDate, Duration, MpaRequest, GenresRequest, DirectorsRequest {
             String name;
             String description;
             LocalDate releaseDate;
             int duration;
             RatingMpaDto mpa;
             Set<GenreDto> genres;
+            Set<DirectorDto> directors;
         }
 
-        @Value public static class Update implements Id, Name, Description, ReleaseDate, Duration, MpaRequest, GenresRequest {
+        @Value public static class Update implements Id, Name, Description, ReleaseDate, Duration, MpaRequest, GenresRequest, DirectorsRequest {
             Long id;
             String name;
             String description;
@@ -40,11 +44,12 @@ public enum FilmDto {;
             int duration;
             RatingMpaDto mpa;
             Set<GenreDto> genres;
+            Set<DirectorDto> directors;
         }
     }
 
     public enum Response {;
-        @Value public static class Public implements Id, Name, Description, ReleaseDate, Duration, MpaResponse, GenresResponse {
+        @Value public static class Public implements Id, Name, Description, ReleaseDate, Duration, MpaResponse, GenresResponse, DirectorsResponse {
             Long id;
             String name;
             String description;
@@ -52,6 +57,7 @@ public enum FilmDto {;
             int duration;
             RatingMpa mpa;
             Set<Genre> genres;
+            Set<Director> directors;
         }
     }
 }
