@@ -6,10 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.yandex.practicum.filmorate.dto.FilmDto;
 import ru.yandex.practicum.filmorate.dto.GenreDto;
 import ru.yandex.practicum.filmorate.dto.mapper.FilmMapper;
-import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.model.FilmGenre;
-import ru.yandex.practicum.filmorate.model.Genre;
-import ru.yandex.practicum.filmorate.model.RatingMpa;
+import ru.yandex.practicum.filmorate.model.*;
 import ru.yandex.practicum.filmorate.storage.interfaces.*;
 
 import java.util.*;
@@ -24,6 +21,7 @@ public class FilmService {
     private final LikesStorage likesStorage;
     private final FilmGenresStorage filmGenresStorage;
     private final RatingMpaStorage ratingMpaStorage;
+    private final UserStorage userStorage;
 
     public List<FilmDto.Response.Public> findAll() {
         return prepare(filmStorage.findAll());
@@ -32,6 +30,11 @@ public class FilmService {
     public List<FilmDto.Response.Public> getMostPopularFilms(int count) {
         log.debug("popular films count {}", count);
         return prepare(filmStorage.findAllBy(count));
+    }
+
+    public List<FilmDto.Response.Public> getCommonFilms(long userId, long friendId) {
+        log.debug("{} common films {}", userId, friendId);
+        return prepare(filmStorage.findCommon(getUserById(userId).getId(), getUserById(friendId).getId()));
     }
 
     public FilmDto.Response.Public create(FilmDto.Request.Create request) {
@@ -109,5 +112,9 @@ public class FilmService {
                                         .findAny().orElseThrow())
                                 .collect(Collectors.toSet())))
                 .toList();
+    }
+
+    private User getUserById(long id) {
+        return userStorage.findOneById(id).orElseThrow();
     }
 }
