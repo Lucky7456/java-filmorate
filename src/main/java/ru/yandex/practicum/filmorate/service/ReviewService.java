@@ -3,9 +3,13 @@ package ru.yandex.practicum.filmorate.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import ru.yandex.practicum.filmorate.model.Feed;
 import ru.yandex.practicum.filmorate.model.Review;
+import ru.yandex.practicum.filmorate.model.enums.EventType;
+import ru.yandex.practicum.filmorate.model.enums.Operation;
 import ru.yandex.practicum.filmorate.storage.interfaces.*;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.NoSuchElementException;
 
@@ -16,6 +20,7 @@ public class ReviewService {
     private final ReviewStorage reviewStorage;
     private final ReviewLikesStorage likesStorage;
     private final ReviewDislikesStorage dislikesStorage;
+    private final FeedStorage feedStorage;
     private final UserStorage userStorage;
     private final FilmStorage filmStorage;
 
@@ -33,6 +38,7 @@ public class ReviewService {
         filmStorage.findOneById(review.getFilmId()).orElseThrow();
         userStorage.findOneById(review.getUserId()).orElseThrow();
         review.setReviewId(reviewStorage.create(review));
+        feedStorage.create(new Feed(null, review.getUserId(), EventType.REVIEW, Operation.ADD, review.getReviewId(), Instant.now().toEpochMilli()));
         return review;
     }
 
@@ -44,13 +50,17 @@ public class ReviewService {
                 review.getReviewId()
         );
         if (updatedRows == 1) {
-            return reviewStorage.findOneById(review.getReviewId()).orElseThrow();
+            Review updatedReview = reviewStorage.findOneById(review.getReviewId()).orElseThrow();
+            feedStorage.create(new Feed(null, updatedReview.getUserId(), EventType.REVIEW, Operation.UPDATE, updatedReview.getReviewId(), Instant.now().toEpochMilli()));
+            return updatedReview;
         }
         throw new NoSuchElementException("review not found");
     }
 
     public void delete(long id) {
         log.debug("delete review {}", id);
+        Review review = reviewStorage.findOneById(id).orElseThrow();
+        feedStorage.create(new Feed(null, review.getUserId(), EventType.REVIEW, Operation.REMOVE, id, Instant.now().toEpochMilli()));
         reviewStorage.delete(id);
     }
 
