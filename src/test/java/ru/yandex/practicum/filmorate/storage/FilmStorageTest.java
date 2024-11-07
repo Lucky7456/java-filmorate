@@ -41,7 +41,7 @@ public class FilmStorageTest {
     public void testFindLimitedAmountOfFilmsSortedByPopularity() {
         int count = 3;
 
-        Assertions.assertThat(storage.findAllBy(count))
+        Assertions.assertThat(storage.findAllBy(count, -1, -1))
                 .hasOnlyElementsOfType(Film.class)
                 .hasSizeLessThanOrEqualTo(count);
     }

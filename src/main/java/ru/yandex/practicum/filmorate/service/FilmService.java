@@ -137,18 +137,18 @@ public class FilmService {
                         ratings.stream()
                                 .filter(rating -> rating.id().equals(film.getMpa()))
                                 .findAny().orElseThrow(),
-                        filmGenres.stream()
+                        new LinkedHashSet<>(filmGenres.stream()
                                 .filter(filmGenre -> filmGenre.filmId().equals(film.getId()))
                                 .map(filmGenre -> genres.stream()
                                         .filter(genre -> genre.id().equals(filmGenre.genreId()))
                                         .findAny().orElseThrow())
-                                .collect(Collectors.toSet()),
-                        filmDirectors.stream()
+                                .toList()),
+                        new LinkedHashSet<>(filmDirectors.stream()
                                 .filter(filmDirector -> filmDirector.filmId().equals(film.getId()))
                                 .map(filmDirector -> directors.stream()
                                         .filter(director -> director.id().equals(filmDirector.directorId()))
                                         .findAny().orElseThrow())
-                                .collect(Collectors.toSet())))
+                                .collect(Collectors.toSet()))))
                 .toList();
     }
 
