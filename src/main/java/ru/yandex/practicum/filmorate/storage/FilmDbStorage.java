@@ -55,7 +55,7 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
             "SELECT f.* " +
             "FROM films AS f " +
             "LEFT JOIN likes AS l ON l.film_id = f.id " +
-            "%s" +
+            "%s %s" +
             "GROUP BY f.id " +
             "ORDER BY COUNT(l.user_id) DESC";
     private static final String FIND_COMMON_QUERY =
@@ -75,20 +75,24 @@ public class FilmDbStorage extends BaseCrudStorage<Film> implements FilmStorage 
 
     @Override
     public List<Film> search(String query, List<String> by) {
-        StringBuilder resultQuery = new StringBuilder();
+        StringBuilder joinQuery = new StringBuilder();
+        StringBuilder whereQuery = new StringBuilder("WHERE ");
         List<Object> resultParams = new ArrayList<>();
         resultParams.add(query);
+        if (by.contains("director")) {
+            joinQuery.append("LEFT JOIN directors AS fd ON fd.film_id = f.id ");
+            joinQuery.append("LEFT JOIN director AS d ON d.id = fd.director_id ");
+            whereQuery.append("d.name ILIKE CONCAT('%', ?, '%')");
+        }
         if (by.size() == 2) {
             resultParams.add(query);
-        }
-        if (by.contains("director")) {
-            resultQuery.append("JOIN directors AS d ON d.id = f.director_id AND d.name ILIKE CONCAT('%', ?, '%') ");
+            whereQuery.append("OR ");
         }
         if (by.contains("title")) {
-            resultQuery.append("WHERE f.name ILIKE CONCAT('%', ?, '%') ");
+            whereQuery.append("f.name ILIKE CONCAT('%', ?, '%') ");
         }
 
-        return findMany(String.format(SEARCH_QUERY, resultQuery), resultParams.toArray());
+        return findMany(String.format(SEARCH_QUERY, joinQuery, whereQuery), resultParams.toArray());
     }
 
     @Override
